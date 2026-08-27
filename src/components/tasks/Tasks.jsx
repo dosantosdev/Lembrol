@@ -29,6 +29,13 @@ export default function Tasks({ projectId }) {
     });
   }
 
+  function handleToggleTask(id) {
+    dispatch({
+      type: "TOGGLE_TASK",
+      payload: id,
+    });
+  }
+
   function formatTaskDate(date) {
     if (!date) {
       return null;
@@ -60,24 +67,41 @@ export default function Tasks({ projectId }) {
               key={task.id}
               className="flex justify-between items-start my-4 gap-4"
             >
-              <div>
-                <span
-                  className={
-                    task.completed ? "line-through text-stone-400" : ""
-                  }
-                >
-                  {task.text}
-                </span>
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggleTask(task.id)}
+                  className="mt-1"
+                />
 
-                {(task.dueDate || task.dueTime) && (
-                  <div className="text-sm text-stone-400 mt-1">
-                    {task.dueDate && formatTaskDate(task.dueDate)}
+                <div>
+                  <span
+                    className={
+                      task.completed
+                        ? "line-through text-stone-400"
+                        : "text-stone-800"
+                    }
+                  >
+                    {task.text}
+                  </span>
 
-                    {task.dueDate && task.dueTime && " • "}
+                  {task.completed && (
+                    <div className="text-sm text-stone-400 mt-1">
+                      {t("tasks", "completed")}
+                    </div>
+                  )}
 
-                    {task.dueTime}
-                  </div>
-                )}
+                  {(task.dueDate || task.dueTime) && (
+                    <div className="text-sm text-stone-400 mt-1">
+                      {task.dueDate && formatTaskDate(task.dueDate)}
+
+                      {task.dueDate && task.dueTime && " • "}
+
+                      {task.dueTime}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <button

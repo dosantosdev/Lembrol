@@ -4,6 +4,7 @@ import NoProjectSelected from "./components/projects/NoProjectSelected.jsx";
 import ProjectsSidebar from "./components/projects/ProjectsSidebar.jsx";
 import SelectedProject from "./components/projects/SelectedProject.jsx";
 import LanguageSelector from "./components/LanguageSelector.jsx";
+import ReminderNotification from "./components/reminders/ReminderNotification.jsx";
 
 function App() {
   const { projectsState } = useProjectContext();
@@ -29,6 +30,8 @@ function App() {
 
         {content}
       </div>
+
+      <ReminderNotification />
     </main>
   );
 }

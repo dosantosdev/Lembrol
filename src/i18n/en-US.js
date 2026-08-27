@@ -5,6 +5,7 @@ const enUS = {
     delete: "Delete",
     clear: "Clear",
     okay: "Okay",
+    dismiss: "Dismiss",
     imageAlt: "An empty task list",
   },
 
@@ -32,6 +33,13 @@ const enUS = {
     fifteenMinutes: "15 minutes before",
     thirtyMinutes: "30 minutes before",
     oneHour: "1 hour before",
+    complete: "Complete",
+    completed: "Completed",
+  },
+
+  reminders: {
+    title: "Reminder!",
+    message: "You have a task to remember:",
   },
 
   validation: {

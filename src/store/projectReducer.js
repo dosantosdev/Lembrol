@@ -9,8 +9,26 @@ export default function projectReducer(state, action) {
     case "ADD_PROJECT":
       return {
         ...state,
-        projects: [...state.projects, action.payload],
         selectedProjectId: undefined,
+        projects: [...state.projects, action.payload],
+      };
+
+    case "DELETE_PROJECT":
+      return {
+        ...state,
+        selectedProjectId: undefined,
+        projects: state.projects.filter(
+          (project) => project.id !== state.selectedProjectId,
+        ),
+        tasks: state.tasks.filter(
+          (task) => task.projectId !== state.selectedProjectId,
+        ),
+      };
+
+    case "SELECT_PROJECT":
+      return {
+        ...state,
+        selectedProjectId: action.payload,
       };
 
     case "START_ADD_PROJECT":
@@ -25,23 +43,6 @@ export default function projectReducer(state, action) {
         selectedProjectId: undefined,
       };
 
-    case "SELECT_PROJECT":
-      return {
-        ...state,
-        selectedProjectId: action.payload,
-      };
-
-    case "DELETE_PROJECT": {
-      const projectId = state.selectedProjectId;
-
-      return {
-        ...state,
-        selectedProjectId: undefined,
-        projects: state.projects.filter((project) => project.id !== projectId),
-        tasks: state.tasks.filter((task) => task.projectId !== projectId),
-      };
-    }
-
     case "ADD_TASK":
       return {
         ...state,
@@ -52,6 +53,19 @@ export default function projectReducer(state, action) {
       return {
         ...state,
         tasks: state.tasks.filter((task) => task.id !== action.payload),
+      };
+
+    case "TOGGLE_TASK":
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload
+            ? {
+                ...task,
+                completed: !task.completed,
+              }
+            : task,
+        ),
       };
 
     default:

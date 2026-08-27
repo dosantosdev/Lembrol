@@ -5,6 +5,7 @@ const ptBR = {
     delete: "Excluir",
     clear: "Limpar",
     okay: "OK",
+    dismiss: "Dispensar",
     imageAlt: "Uma lista de tarefas vazia",
   },
 
@@ -32,6 +33,13 @@ const ptBR = {
     fifteenMinutes: "15 minutos antes",
     thirtyMinutes: "30 minutos antes",
     oneHour: "1 hora antes",
+    complete: "Concluir",
+    completed: "Concluída",
+  },
+
+  reminders: {
+    title: "Lembrete!",
+    message: "Você tem uma tarefa para lembrar:",
   },
 
   validation: {
