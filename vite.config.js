@@ -4,6 +4,8 @@ import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  base: "./",
+
   plugins: [
     react(),
     tailwindcss(),
@@ -15,8 +17,8 @@ export default defineConfig({
         name: "Lembrol — Project Manager",
         short_name: "Lembrol",
         description: "A project and task manager with intelligent reminders.",
-        start_url: "/",
-        scope: "/",
+        start_url: "./",
+        scope: "./",
         display: "standalone",
 
         theme_color: "#0d0918",
