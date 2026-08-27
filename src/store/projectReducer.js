@@ -13,6 +13,19 @@ export default function projectReducer(state, action) {
         projects: [...state.projects, action.payload],
       };
 
+    case "UPDATE_PROJECT":
+      return {
+        ...state,
+        projects: state.projects.map((project) =>
+          project.id === action.payload.id
+            ? {
+                ...project,
+                ...action.payload,
+              }
+            : project,
+        ),
+      };
+
     case "DELETE_PROJECT":
       return {
         ...state,

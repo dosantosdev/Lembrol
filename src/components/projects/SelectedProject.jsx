@@ -1,14 +1,22 @@
-import { useProjectContext } from "../../store/ProjectContext.jsx";
+import { useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
+import { useProjectContext } from "../../store/ProjectContext.jsx";
+import EditProject from "./EditProject.jsx";
 import Tasks from "../tasks/Tasks.jsx";
 
 export default function SelectedProject() {
   const { projectsState, dispatch } = useProjectContext();
-  const { language, t } = useLanguage();
+  const { t, language } = useLanguage();
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const project = projectsState.projects.find(
     (project) => project.id === projectsState.selectedProjectId,
   );
+
+  if (!project) {
+    return null;
+  }
 
   function handleDeleteProject() {
     dispatch({
@@ -16,40 +24,75 @@ export default function SelectedProject() {
     });
   }
 
-  if (!project) {
-    return null;
+  function handleStartEditing() {
+    setIsEditing(true);
   }
 
-  const formattedDate = new Date(project.dueDate).toLocaleDateString(language, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
+  function handleCloseEditing() {
+    setIsEditing(false);
+  }
+
+  function formatDate(date) {
+    if (!date) {
+      return null;
+    }
+
+    return new Date(`${date}T00:00:00`).toLocaleDateString(language, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  }
 
   return (
-    <div className="w-140 mt-16">
-      <header className="pb-4 mb-4 border-b-2 border-stone-300">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-stone-600 mb-2">
-            {project.title}
-          </h1>
+    <div className="w-full max-w-3xl">
+      {!isEditing && (
+        <>
+          <div className="flex items-start justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-bold text-stone-800">
+                {project.title}
+              </h1>
 
-          <button
-            className="text-stone-600 hover:text-stone-950"
-            onClick={handleDeleteProject}
-          >
-            {t("common", "delete")}
-          </button>
-        </div>
+              {project.description && (
+                <p className="mt-2 text-stone-600">{project.description}</p>
+              )}
 
-        <p className="mb-4 text-stone-400">{formattedDate}</p>
+              {project.dueDate && (
+                <p className="mt-2 text-sm text-stone-400">
+                  {t("projects", "dueDateLabel")}: {formatDate(project.dueDate)}
+                </p>
+              )}
+            </div>
 
-        <p className="text-stone-600 whitespace-pre-wrap">
-          {project.description}
-        </p>
-      </header>
+            <div className="flex shrink-0 gap-3">
+              <button
+                type="button"
+                onClick={handleStartEditing}
+                className="text-stone-700 hover:text-stone-950"
+              >
+                {t("common", "edit")}
+              </button>
 
-      <Tasks projectId={project.id} />
+              <button
+                type="button"
+                onClick={handleDeleteProject}
+                className="text-stone-700 hover:text-red-500"
+              >
+                {t("common", "delete")}
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {isEditing && (
+        <EditProject project={project} onClose={handleCloseEditing} />
+      )}
+
+      <div className="mt-8">
+        <Tasks projectId={project.id} />
+      </div>
     </div>
   );
 }
