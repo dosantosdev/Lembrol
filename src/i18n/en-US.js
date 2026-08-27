@@ -19,6 +19,9 @@ const enUS = {
     titleLabel: "Title",
     descriptionLabel: "Description",
     dueDateLabel: "Due Date",
+    deleteTitle: "Delete project?",
+    deleteMessage:
+      "Are you sure you want to delete this project? All tasks in this project will also be deleted.",
   },
 
   tasks: {
@@ -38,6 +41,8 @@ const enUS = {
     complete: "Complete",
     completed: "Completed",
     overdue: "Overdue task",
+    deleteTitle: "Delete task?",
+    deleteMessage: "Are you sure you want to delete this task?",
   },
 
   reminders: {

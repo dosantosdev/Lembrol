@@ -19,6 +19,9 @@ const ptBR = {
     titleLabel: "Título",
     descriptionLabel: "Descrição",
     dueDateLabel: "Data de vencimento",
+    deleteTitle: "Excluir projeto?",
+    deleteMessage:
+      "Tem certeza que deseja excluir este projeto? Todas as tarefas deste projeto também serão excluídas.",
   },
 
   tasks: {
@@ -38,6 +41,8 @@ const ptBR = {
     complete: "Concluir",
     completed: "Concluída",
     overdue: "Tarefa atrasada",
+    deleteTitle: "Excluir tarefa?",
+    deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
   },
 
   reminders: {

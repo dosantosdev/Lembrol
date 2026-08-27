@@ -3,6 +3,7 @@ import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
 import { isTaskOverdue } from "../../reminders/reminderService.js";
 import { generateId } from "../../utils/id.js";
+import ConfirmDialog from "../ui/ConfirmDialog.jsx";
 import NewTask from "./NewTask.jsx";
 import EditTask from "./EditTask.jsx";
 
@@ -11,10 +12,13 @@ export default function Tasks({ projectId }) {
   const { t, language } = useLanguage();
 
   const [editingTaskId, setEditingTaskId] = useState(null);
+  const [deletingTaskId, setDeletingTaskId] = useState(null);
 
   const projectTasks = projectsState.tasks.filter(
     (task) => task.projectId === projectId,
   );
+
+  const deletingTask = projectTasks.find((task) => task.id === deletingTaskId);
 
   function handleAddTask(taskData) {
     dispatch({
@@ -27,11 +31,13 @@ export default function Tasks({ projectId }) {
     });
   }
 
-  function handleDeleteTask(id) {
+  function handleDeleteTask() {
     dispatch({
       type: "DELETE_TASK",
-      payload: id,
+      payload: deletingTaskId,
     });
+
+    setDeletingTaskId(null);
   }
 
   function handleToggleTask(id) {
@@ -109,7 +115,7 @@ export default function Tasks({ projectId }) {
                       )}
 
                       {overdue && (
-                        <div className="mt-1 font-medium text-sm text-red-600">
+                        <div className="mt-1 text-sm font-medium text-red-600">
                           {t("tasks", "overdue")}
                         </div>
                       )}
@@ -138,7 +144,7 @@ export default function Tasks({ projectId }) {
                     <button
                       type="button"
                       className="text-stone-700 hover:text-red-500"
-                      onClick={() => handleDeleteTask(task.id)}
+                      onClick={() => setDeletingTaskId(task.id)}
                     >
                       {t("common", "clear")}
                     </button>
@@ -152,6 +158,15 @@ export default function Tasks({ projectId }) {
             );
           })}
         </ul>
+      )}
+
+      {deletingTask && (
+        <ConfirmDialog
+          title={t("tasks", "deleteTitle")}
+          message={t("tasks", "deleteMessage")}
+          onConfirm={handleDeleteTask}
+          onCancel={() => setDeletingTaskId(null)}
+        />
       )}
     </section>
   );
