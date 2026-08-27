@@ -89,6 +89,7 @@ export default function projectReducer(state, action) {
             ? {
                 ...task,
                 completed: !task.completed,
+                completedAt: !task.completed ? new Date().toISOString() : null,
               }
             : task,
         ),

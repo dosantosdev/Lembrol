@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
 import { isTaskOverdue } from "../../reminders/reminderService.js";
@@ -18,9 +18,55 @@ export default function Tasks({ projectId }) {
     (task) => task.projectId === projectId,
   );
 
-  const pendingTasks = projectTasks.filter((task) => !task.completed);
+  const pendingTasks = useMemo(() => {
+    return projectTasks
+      .filter((task) => !task.completed)
+      .sort((taskA, taskB) => {
+        const taskAOverdue = isTaskOverdue(taskA);
+        const taskBOverdue = isTaskOverdue(taskB);
 
-  const completedTasks = projectTasks.filter((task) => task.completed);
+        if (taskAOverdue && !taskBOverdue) {
+          return -1;
+        }
+
+        if (!taskAOverdue && taskBOverdue) {
+          return 1;
+        }
+
+        if (!taskA.dueDate && !taskB.dueDate) {
+          return 0;
+        }
+
+        if (!taskA.dueDate) {
+          return 1;
+        }
+
+        if (!taskB.dueDate) {
+          return -1;
+        }
+
+        return (
+          new Date(`${taskA.dueDate}T00:00:00`) -
+          new Date(`${taskB.dueDate}T00:00:00`)
+        );
+      });
+  }, [projectTasks]);
+
+  const completedTasks = useMemo(() => {
+    return projectTasks
+      .filter((task) => task.completed)
+      .sort((taskA, taskB) => {
+        if (!taskA.completedAt) {
+          return 1;
+        }
+
+        if (!taskB.completedAt) {
+          return -1;
+        }
+
+        return new Date(taskB.completedAt) - new Date(taskA.completedAt);
+      });
+  }, [projectTasks]);
 
   const deletingTask = projectTasks.find((task) => task.id === deletingTaskId);
 
