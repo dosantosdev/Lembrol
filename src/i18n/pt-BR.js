@@ -30,6 +30,8 @@ const ptBR = {
     placeholder: "Digite uma tarefa...",
     taskLabel: "Tarefa",
     empty: "Este projeto ainda não possui nenhuma tarefa.",
+    pending: "Pendentes",
+    completedTitle: "Concluídas",
     dueDateLabel: "Data",
     dueTimeLabel: "Horário",
     reminderLabel: "Lembrar com antecedência",

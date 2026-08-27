@@ -30,6 +30,8 @@ const enUS = {
     placeholder: "Enter a task...",
     taskLabel: "Task",
     empty: "This project does not have any tasks yet.",
+    pending: "Pending",
+    completedTitle: "Completed",
     dueDateLabel: "Date",
     dueTimeLabel: "Time",
     reminderLabel: "Remind me in advance",
