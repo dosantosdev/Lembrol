@@ -24,6 +24,14 @@ const enUS = {
     add: "Add Task",
     placeholder: "Enter a task...",
     empty: "This project does not have any tasks yet.",
+    dueDateLabel: "Date",
+    dueTimeLabel: "Time",
+    reminderLabel: "Remind me in advance",
+    noReminder: "No reminder",
+    fiveMinutes: "5 minutes before",
+    fifteenMinutes: "15 minutes before",
+    thirtyMinutes: "30 minutes before",
+    oneHour: "1 hour before",
   },
 
   validation: {

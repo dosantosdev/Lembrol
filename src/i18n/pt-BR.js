@@ -5,6 +5,7 @@ const ptBR = {
     delete: "Excluir",
     clear: "Limpar",
     okay: "OK",
+    imageAlt: "Uma lista de tarefas vazia",
   },
 
   projects: {
@@ -23,6 +24,14 @@ const ptBR = {
     add: "Adicionar tarefa",
     placeholder: "Digite uma tarefa...",
     empty: "Este projeto ainda não possui nenhuma tarefa.",
+    dueDateLabel: "Data",
+    dueTimeLabel: "Horário",
+    reminderLabel: "Lembrar com antecedência",
+    noReminder: "Sem lembrete",
+    fiveMinutes: "5 minutos antes",
+    fifteenMinutes: "15 minutos antes",
+    thirtyMinutes: "30 minutos antes",
+    oneHour: "1 hora antes",
   },
 
   validation: {

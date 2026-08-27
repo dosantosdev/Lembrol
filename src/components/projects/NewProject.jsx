@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
+import { generateId } from "../../utils/id.js";
 import Input from "../ui/Input.jsx";
 import Modal from "../ui/Modal.jsx";
 
@@ -30,7 +31,7 @@ export default function NewProject() {
     dispatch({
       type: "ADD_PROJECT",
       payload: {
-        id: Math.random(),
+        id: generateId(),
         title: enteredTitle,
         description: enteredDescription,
         dueDate: enteredDueDate,

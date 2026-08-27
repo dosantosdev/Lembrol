@@ -1,23 +1,22 @@
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
+import { generateId } from "../../utils/id.js";
 import NewTask from "./NewTask.jsx";
 
 export default function Tasks({ projectId }) {
   const { projectsState, dispatch } = useProjectContext();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const projectTasks = projectsState.tasks.filter(
     (task) => task.projectId === projectId,
   );
 
-  function handleAddTask(text) {
-    const taskId = Math.random();
-
+  function handleAddTask(taskData) {
     dispatch({
       type: "ADD_TASK",
       payload: {
-        text,
-        id: taskId,
+        ...taskData,
+        id: generateId(),
         projectId,
       },
     });
@@ -27,6 +26,18 @@ export default function Tasks({ projectId }) {
     dispatch({
       type: "DELETE_TASK",
       payload: id,
+    });
+  }
+
+  function formatTaskDate(date) {
+    if (!date) {
+      return null;
+    }
+
+    return new Date(`${date}T00:00:00`).toLocaleDateString(language, {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     });
   }
 
@@ -45,8 +56,29 @@ export default function Tasks({ projectId }) {
       {projectTasks.length > 0 && (
         <ul className="p-4 mt-8 rounded-md bg-stone-100">
           {projectTasks.map((task) => (
-            <li key={task.id} className="flex justify-between my-4">
-              <span>{task.text}</span>
+            <li
+              key={task.id}
+              className="flex justify-between items-start my-4 gap-4"
+            >
+              <div>
+                <span
+                  className={
+                    task.completed ? "line-through text-stone-400" : ""
+                  }
+                >
+                  {task.text}
+                </span>
+
+                {(task.dueDate || task.dueTime) && (
+                  <div className="text-sm text-stone-400 mt-1">
+                    {task.dueDate && formatTaskDate(task.dueDate)}
+
+                    {task.dueDate && task.dueTime && " • "}
+
+                    {task.dueTime}
+                  </div>
+                )}
+              </div>
 
               <button
                 className="text-stone-700 hover:text-red-500"
