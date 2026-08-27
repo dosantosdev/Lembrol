@@ -27,15 +27,21 @@ export default function ProjectProgress({ tasks }) {
         />
       </div>
 
-      <div className="mt-3 flex gap-4 text-sm text-stone-500">
-        <span>
-          {totalTasks} {t("projects", "totalTasks")}
-        </span>
+      {totalTasks === 0 ? (
+        <p className="mt-3 text-sm text-stone-500">
+          {t("projects", "noTasks")}
+        </p>
+      ) : (
+        <div className="mt-3 flex gap-4 text-sm text-stone-500">
+          <span>
+            {totalTasks} {t("projects", "totalTasks")}
+          </span>
 
-        <span>
-          {completedTasks} {t("projects", "completedTasks")}
-        </span>
-      </div>
+          <span>
+            {completedTasks} {t("projects", "completedTasks")}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

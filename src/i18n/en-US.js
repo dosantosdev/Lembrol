@@ -22,6 +22,7 @@ const enUS = {
     progress: "Progress",
     totalTasks: "tasks",
     completedTasks: "completed",
+    noTasks: "No tasks added yet.",
     deleteTitle: "Delete project?",
     deleteMessage:
       "Are you sure you want to delete this project? All tasks in this project will also be deleted.",
@@ -37,7 +38,7 @@ const enUS = {
     completedTitle: "Completed",
     dueDateLabel: "Date",
     dueTimeLabel: "Time",
-    reminderLabel: "Remind me in advance",
+    reminderLabel: "Reminder",
     noReminder: "No reminder",
     fiveMinutes: "5 minutes before",
     fifteenMinutes: "15 minutes before",
@@ -46,12 +47,12 @@ const enUS = {
     complete: "Complete",
     completed: "Completed",
     overdue: "Overdue task",
-    deleteTitle: "Delete task?",
-    deleteMessage: "Are you sure you want to delete this task?",
     priorityLabel: "Priority",
     priorityHigh: "High",
     priorityMedium: "Medium",
     priorityLow: "Low",
+    deleteTitle: "Delete task?",
+    deleteMessage: "Are you sure you want to delete this task?",
   },
 
   reminders: {

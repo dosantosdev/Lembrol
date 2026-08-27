@@ -22,6 +22,7 @@ const ptBR = {
     progress: "Progresso",
     totalTasks: "tarefas",
     completedTasks: "concluídas",
+    noTasks: "Nenhuma tarefa adicionada ainda.",
     deleteTitle: "Excluir projeto?",
     deleteMessage:
       "Tem certeza que deseja excluir este projeto? Todas as tarefas deste projeto também serão excluídas.",
@@ -37,7 +38,7 @@ const ptBR = {
     completedTitle: "Concluídas",
     dueDateLabel: "Data",
     dueTimeLabel: "Horário",
-    reminderLabel: "Lembrar com antecedência",
+    reminderLabel: "Lembrete",
     noReminder: "Sem lembrete",
     fiveMinutes: "5 minutos antes",
     fifteenMinutes: "15 minutos antes",
@@ -46,12 +47,12 @@ const ptBR = {
     complete: "Concluir",
     completed: "Concluída",
     overdue: "Tarefa atrasada",
-    deleteTitle: "Excluir tarefa?",
-    deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
     priorityLabel: "Prioridade",
     priorityHigh: "Alta",
     priorityMedium: "Média",
     priorityLow: "Baixa",
+    deleteTitle: "Excluir tarefa?",
+    deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
   },
 
   reminders: {
