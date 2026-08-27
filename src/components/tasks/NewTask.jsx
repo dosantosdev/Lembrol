@@ -8,25 +8,12 @@ export default function NewTask({ onAdd }) {
   const [dueDate, setDueDate] = useState("");
   const [dueTime, setDueTime] = useState("");
   const [reminderMinutes, setReminderMinutes] = useState("");
+  const [priority, setPriority] = useState("medium");
 
-  function handleTaskChange(event) {
-    setEnteredTask(event.target.value);
-  }
+  function handleSubmit(event) {
+    event.preventDefault();
 
-  function handleDateChange(event) {
-    setDueDate(event.target.value);
-  }
-
-  function handleTimeChange(event) {
-    setDueTime(event.target.value);
-  }
-
-  function handleReminderChange(event) {
-    setReminderMinutes(event.target.value);
-  }
-
-  function handleClick() {
-    if (enteredTask.trim() === "") {
+    if (!enteredTask.trim()) {
       return;
     }
 
@@ -34,7 +21,8 @@ export default function NewTask({ onAdd }) {
       text: enteredTask.trim(),
       dueDate,
       dueTime,
-      reminderMinutes: reminderMinutes ? Number(reminderMinutes) : null,
+      reminderMinutes: reminderMinutes === "" ? null : Number(reminderMinutes),
+      priority,
       completed: false,
     });
 
@@ -42,63 +30,61 @@ export default function NewTask({ onAdd }) {
     setDueDate("");
     setDueTime("");
     setReminderMinutes("");
+    setPriority("medium");
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-4">
+    <form onSubmit={handleSubmit} className="rounded-md bg-stone-100 p-5">
+      <div>
+        <label className="block text-sm font-medium text-stone-700">
+          {t("tasks", "taskLabel")}
+        </label>
+
         <input
           type="text"
-          className="w-64 px-2 py-1 rounded-sm bg-stone-200"
-          onChange={handleTaskChange}
           value={enteredTask}
+          onChange={(event) => setEnteredTask(event.target.value)}
           placeholder={t("tasks", "placeholder")}
+          className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
         />
-
-        <button
-          className="text-stone-700 hover:text-stone-950"
-          onClick={handleClick}
-        >
-          {t("tasks", "add")}
-        </button>
       </div>
 
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-stone-500">
+      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div>
+          <label className="block text-sm font-medium text-stone-700">
             {t("tasks", "dueDateLabel")}
           </label>
 
           <input
             type="date"
-            className="px-2 py-1 rounded-sm bg-stone-200 text-stone-700"
             value={dueDate}
-            onChange={handleDateChange}
+            onChange={(event) => setDueDate(event.target.value)}
+            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-stone-500">
+        <div>
+          <label className="block text-sm font-medium text-stone-700">
             {t("tasks", "dueTimeLabel")}
           </label>
 
           <input
             type="time"
-            className="px-2 py-1 rounded-sm bg-stone-200 text-stone-700"
             value={dueTime}
-            onChange={handleTimeChange}
+            onChange={(event) => setDueTime(event.target.value)}
+            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
           />
         </div>
 
-        <div className="flex flex-col gap-1">
-          <label className="text-sm text-stone-500">
+        <div>
+          <label className="block text-sm font-medium text-stone-700">
             {t("tasks", "reminderLabel")}
           </label>
 
           <select
-            className="px-2 py-1 rounded-sm bg-stone-200 text-stone-700"
             value={reminderMinutes}
-            onChange={handleReminderChange}
+            onChange={(event) => setReminderMinutes(event.target.value)}
+            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
           >
             <option value="">{t("tasks", "noReminder")}</option>
 
@@ -111,7 +97,34 @@ export default function NewTask({ onAdd }) {
             <option value="60">{t("tasks", "oneHour")}</option>
           </select>
         </div>
+
+        <div>
+          <label className="block text-sm font-medium text-stone-700">
+            {t("tasks", "priorityLabel")}
+          </label>
+
+          <select
+            value={priority}
+            onChange={(event) => setPriority(event.target.value)}
+            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+          >
+            <option value="high">🔴 {t("tasks", "priorityHigh")}</option>
+
+            <option value="medium">🟡 {t("tasks", "priorityMedium")}</option>
+
+            <option value="low">🟢 {t("tasks", "priorityLow")}</option>
+          </select>
+        </div>
       </div>
-    </div>
+
+      <div className="mt-5 flex justify-end">
+        <button
+          type="submit"
+          className="rounded-md bg-stone-700 px-5 py-2 text-sm font-medium text-white hover:bg-stone-800"
+        >
+          {t("tasks", "add")}
+        </button>
+      </div>
+    </form>
   );
 }

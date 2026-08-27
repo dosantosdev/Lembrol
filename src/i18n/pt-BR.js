@@ -45,6 +45,10 @@ const ptBR = {
     overdue: "Tarefa atrasada",
     deleteTitle: "Excluir tarefa?",
     deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
+    priorityLabel: "Prioridade",
+    priorityHigh: "Alta",
+    priorityMedium: "Média",
+    priorityLow: "Baixa",
   },
 
   reminders: {

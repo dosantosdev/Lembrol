@@ -45,6 +45,10 @@ const enUS = {
     overdue: "Overdue task",
     deleteTitle: "Delete task?",
     deleteMessage: "Are you sure you want to delete this task?",
+    priorityLabel: "Priority",
+    priorityHigh: "High",
+    priorityMedium: "Medium",
+    priorityLow: "Low",
   },
 
   reminders: {

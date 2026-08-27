@@ -19,9 +19,23 @@ export default function Tasks({ projectId }) {
   );
 
   const pendingTasks = useMemo(() => {
+    const priorityOrder = {
+      high: 1,
+      medium: 2,
+      low: 3,
+    };
+
     return projectTasks
       .filter((task) => !task.completed)
       .sort((taskA, taskB) => {
+        const priorityA = priorityOrder[taskA.priority] ?? 2;
+
+        const priorityB = priorityOrder[taskB.priority] ?? 2;
+
+        if (priorityA !== priorityB) {
+          return priorityA - priorityB;
+        }
+
         const taskAOverdue = isTaskOverdue(taskA);
         const taskBOverdue = isTaskOverdue(taskB);
 
@@ -117,6 +131,18 @@ export default function Tasks({ projectId }) {
     });
   }
 
+  function getPriorityLabel(priority) {
+    if (priority === "high") {
+      return `🔴 ${t("tasks", "priorityHigh")}`;
+    }
+
+    if (priority === "low") {
+      return `🟢 ${t("tasks", "priorityLow")}`;
+    }
+
+    return `🟡 ${t("tasks", "priorityMedium")}`;
+  }
+
   function renderTask(task) {
     const overdue = isTaskOverdue(task);
 
@@ -132,17 +158,25 @@ export default function Tasks({ projectId }) {
             />
 
             <div>
-              <span
-                className={
-                  task.completed
-                    ? "text-stone-400 line-through"
-                    : overdue
-                      ? "font-medium text-red-700"
-                      : "text-stone-800"
-                }
-              >
-                {task.text}
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span
+                  className={
+                    task.completed
+                      ? "text-stone-400 line-through"
+                      : overdue
+                        ? "font-medium text-red-700"
+                        : "text-stone-800"
+                  }
+                >
+                  {task.text}
+                </span>
+
+                {!task.completed && (
+                  <span className="text-xs font-medium text-stone-500">
+                    {getPriorityLabel(task.priority)}
+                  </span>
+                )}
+              </div>
 
               {task.completed && (
                 <div className="mt-1 text-sm text-stone-400">
