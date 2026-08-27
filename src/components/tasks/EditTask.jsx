@@ -38,23 +38,21 @@ export default function EditTask({ task, onClose }) {
   }
 
   return (
-    <form onSubmit={handleSave} className="mt-3 rounded-md bg-stone-200 p-4">
-      <div>
-        <label className="block text-sm font-medium text-stone-700">
-          {t("tasks", "taskLabel")}
-        </label>
-
-        <input
-          type="text"
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
-        />
-      </div>
-
-      <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <form onSubmit={handleSave} className="lembrol-edit-task">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,2fr)_1fr_1fr_1fr]">
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">{t("tasks", "taskLabel")}</label>
+
+          <input
+            type="text"
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            className="lembrol-input"
+          />
+        </div>
+
+        <div>
+          <label className="lembrol-label">
             {t("tasks", "dueDateLabel")}
           </label>
 
@@ -62,12 +60,12 @@ export default function EditTask({ task, onClose }) {
             type="date"
             value={dueDate}
             onChange={(event) => setDueDate(event.target.value)}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+            className="lembrol-input"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">
             {t("tasks", "dueTimeLabel")}
           </label>
 
@@ -75,66 +73,59 @@ export default function EditTask({ task, onClose }) {
             type="time"
             value={dueTime}
             onChange={(event) => setDueTime(event.target.value)}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+            className="lembrol-input"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">
             {t("tasks", "reminderLabel")}
           </label>
 
           <select
             value={reminderMinutes}
             onChange={(event) => setReminderMinutes(event.target.value)}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+            className="lembrol-input"
           >
             <option value="">{t("tasks", "noReminder")}</option>
-
             <option value="5">{t("tasks", "fiveMinutes")}</option>
-
             <option value="15">{t("tasks", "fifteenMinutes")}</option>
-
             <option value="30">{t("tasks", "thirtyMinutes")}</option>
-
             <option value="60">{t("tasks", "oneHour")}</option>
           </select>
         </div>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-stone-700">
+      <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="w-full md:max-w-xs">
+          <label className="lembrol-label">
             {t("tasks", "priorityLabel")}
           </label>
 
           <select
             value={priority}
             onChange={(event) => setPriority(event.target.value)}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+            className="lembrol-input"
           >
             <option value="high">🔴 {t("tasks", "priorityHigh")}</option>
-
             <option value="medium">🟡 {t("tasks", "priorityMedium")}</option>
-
             <option value="low">🟢 {t("tasks", "priorityLow")}</option>
           </select>
         </div>
-      </div>
 
-      <div className="mt-5 flex justify-end gap-3">
-        <button
-          type="submit"
-          className="rounded-md bg-stone-700 px-5 py-2 text-sm font-medium text-white hover:bg-stone-800"
-        >
-          {t("common", "save")}
-        </button>
+        <div className="flex justify-end gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="lembrol-secondary-button"
+          >
+            {t("common", "cancel")}
+          </button>
 
-        <button
-          type="button"
-          onClick={onClose}
-          className="rounded-md bg-stone-300 px-5 py-2 text-sm font-medium text-stone-700 hover:bg-stone-400"
-        >
-          {t("common", "cancel")}
-        </button>
+          <button type="submit" className="lembrol-primary-button">
+            {t("common", "save")}
+          </button>
+        </div>
       </div>
     </form>
   );

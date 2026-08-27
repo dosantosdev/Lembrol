@@ -3,56 +3,75 @@ import { useReminderContext } from "../../reminders/ReminderProvider.jsx";
 import { useSettings } from "../../store/SettingsContext.jsx";
 
 export default function ReminderNotification() {
-  const { activeReminders, dismissReminder } = useReminderContext();
+  const {
+    activeReminders,
+    notificationOpen,
+    notificationMode,
+    dismissReminder,
+  } = useReminderContext();
 
   const { settings } = useSettings();
   const { t } = useLanguage();
 
-  if (!settings.reminders.visual || activeReminders.length === 0) {
+  if (!notificationOpen) {
     return null;
   }
 
+  if (!settings.reminders.visual) {
+    return null;
+  }
+
+  const notificationClassName =
+    notificationMode === "bell"
+      ? "lembrol-notification lembrol-notification--bell"
+      : "lembrol-notification lembrol-notification--alert";
+
   return (
-    <div className="fixed top-6 right-6 z-50 w-80 rounded-xl bg-red-700 p-4 text-white shadow-2xl">
-      <div className="flex items-start gap-3">
-        <div className="relative flex h-8 w-8 shrink-0 items-center justify-center">
-          <span className="absolute h-7 w-7 rounded-full bg-red-400 opacity-40 animate-ping" />
+    <div className={notificationClassName}>
+      <div className="lembrol-notification__orb">
+        <span />
+      </div>
 
-          <span className="absolute h-5 w-5 rounded-full bg-red-300 opacity-70 animate-pulse" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="font-bold text-white">
+            {activeReminders.length > 0
+              ? t("reminders", "title")
+              : t("reminders", "emptyTitle")}
+          </h2>
 
-          <span className="relative h-4 w-4 rounded-full bg-red-200 shadow-lg" />
+          <span className="text-[10px] font-bold tracking-[0.2em] text-violet-200/60">
+            LEMBROL
+          </span>
         </div>
 
-        <div className="flex-1">
-          <div className="flex items-center justify-between gap-2">
-            <h2 className="font-bold">{t("reminders", "title")}</h2>
+        {activeReminders.length > 0 ? (
+          <>
+            <p className="mt-1 text-sm text-white/75">
+              {t("reminders", "message")}
+            </p>
 
-            <span className="text-xs font-semibold uppercase tracking-wide text-red-200">
-              Lembrol
-            </span>
-          </div>
+            <ul className="mt-3 space-y-2">
+              {activeReminders.map((task) => (
+                <li key={task.id} className="lembrol-notification__task">
+                  <span className="truncate font-medium">{task.text}</span>
 
-          <p className="mt-1 text-sm">{t("reminders", "message")}</p>
-
-          <ul className="mt-3 space-y-3">
-            {activeReminders.map((task) => (
-              <li
-                key={task.id}
-                className="flex items-center justify-between gap-3 rounded-md bg-red-800/50 p-2"
-              >
-                <span className="font-medium">{task.text}</span>
-
-                <button
-                  type="button"
-                  className="shrink-0 text-sm underline hover:text-stone-200"
-                  onClick={() => dismissReminder(task.id)}
-                >
-                  {t("common", "dismiss")}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
+                  <button
+                    type="button"
+                    className="shrink-0 text-xs text-violet-200 underline underline-offset-2 hover:text-white"
+                    onClick={() => dismissReminder(task.id)}
+                  >
+                    {t("common", "dismiss")}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p className="mt-1 text-sm text-white/75">
+            {t("reminders", "empty")}
+          </p>
+        )}
       </div>
     </div>
   );

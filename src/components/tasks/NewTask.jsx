@@ -21,16 +21,6 @@ export default function NewTask({ onAdd }) {
       return;
     }
 
-    if (dueTime && !dueDate) {
-      modal.current.open();
-      return;
-    }
-
-    if (reminderMinutes !== "" && !dueDate) {
-      modal.current.open();
-      return;
-    }
-
     onAdd({
       text: enteredTask.trim(),
       dueDate,
@@ -47,42 +37,24 @@ export default function NewTask({ onAdd }) {
     setPriority("medium");
   }
 
-  function getValidationMessage() {
-    if (!enteredTask.trim()) {
-      return t("validation", "missingValues");
-    }
-
-    if (dueTime && !dueDate) {
-      return t("tasks", "timeRequiresDate");
-    }
-
-    if (reminderMinutes !== "" && !dueDate) {
-      return t("tasks", "reminderRequiresDate");
-    }
-
-    return "";
-  }
-
   return (
     <>
-      <form onSubmit={handleSubmit} className="rounded-md bg-stone-100 p-5">
+      <form onSubmit={handleSubmit} className="lembrol-task-form">
         <div>
-          <label className="block text-sm font-medium text-stone-700">
-            {t("tasks", "taskLabel")}
-          </label>
+          <label className="lembrol-label">{t("tasks", "taskLabel")}</label>
 
           <input
             type="text"
             value={enteredTask}
             onChange={(event) => setEnteredTask(event.target.value)}
             placeholder={t("tasks", "placeholder")}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+            className="lembrol-input"
           />
         </div>
 
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
           <div>
-            <label className="block text-sm font-medium text-stone-700">
+            <label className="lembrol-label">
               {t("tasks", "dueDateLabel")}
             </label>
 
@@ -90,12 +62,12 @@ export default function NewTask({ onAdd }) {
               type="date"
               value={dueDate}
               onChange={(event) => setDueDate(event.target.value)}
-              className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+              className="lembrol-input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700">
+            <label className="lembrol-label">
               {t("tasks", "dueTimeLabel")}
             </label>
 
@@ -103,67 +75,68 @@ export default function NewTask({ onAdd }) {
               type="time"
               value={dueTime}
               onChange={(event) => setDueTime(event.target.value)}
-              className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+              className="lembrol-input"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700">
+            <label className="lembrol-label">
               {t("tasks", "reminderLabel")}
             </label>
 
             <select
               value={reminderMinutes}
               onChange={(event) => setReminderMinutes(event.target.value)}
-              className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+              className="lembrol-input"
             >
               <option value="">{t("tasks", "noReminder")}</option>
-
               <option value="5">{t("tasks", "fiveMinutes")}</option>
-
               <option value="15">{t("tasks", "fifteenMinutes")}</option>
-
               <option value="30">{t("tasks", "thirtyMinutes")}</option>
-
               <option value="60">{t("tasks", "oneHour")}</option>
             </select>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700">
+            <label className="lembrol-label">
               {t("tasks", "priorityLabel")}
             </label>
 
             <select
               value={priority}
               onChange={(event) => setPriority(event.target.value)}
-              className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none focus:ring-2 focus:ring-stone-400"
+              className="lembrol-input"
             >
-              <option value="high">🔴 {t("tasks", "priorityHigh")}</option>
-
-              <option value="medium">🟡 {t("tasks", "priorityMedium")}</option>
-
-              <option value="low">🟢 {t("tasks", "priorityLow")}</option>
+              <option value="high">
+                🔴 {t("tasks", "priorityHigh")}
+              </option>
+              <option value="medium">
+                🟡 {t("tasks", "priorityMedium")}
+              </option>
+              <option value="low">
+                🟢 {t("tasks", "priorityLow")}
+              </option>
             </select>
           </div>
         </div>
 
-        <div className="mt-5 flex justify-end">
-          <button
-            type="submit"
-            className="rounded-md bg-stone-700 px-5 py-2 text-sm font-medium text-white hover:bg-stone-800"
-          >
+        <div className="mt-6 flex justify-end">
+          <button type="submit" className="lembrol-primary-button">
             {t("tasks", "add")}
           </button>
         </div>
       </form>
 
       <Modal ref={modal} buttonCaption={t("common", "okay")}>
-        <h2 className="text-xl font-bold text-stone-700">
+        <div className="lembrol-modal-icon">✦</div>
+
+        <h2 className="text-xl font-bold text-slate-100">
           {t("validation", "invalidInput")}
         </h2>
 
-        <p className="mt-3 text-stone-600">{getValidationMessage()}</p>
+        <p className="mt-3 text-slate-300">
+          {t("validation", "missingValues")}
+        </p>
       </Modal>
     </>
   );

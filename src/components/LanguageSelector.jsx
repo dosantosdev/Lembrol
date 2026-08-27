@@ -1,85 +1,31 @@
-import { useEffect, useState } from "react";
 import { useLanguage } from "../i18n/LanguageContext.jsx";
-import { requestNotificationPermission } from "../reminders/notificationService.js";
+import { useReminderContext } from "../reminders/ReminderProvider.jsx";
 
 export default function LanguageSelector() {
   const { language, setLanguage } = useLanguage();
 
-  const [notificationPermission, setNotificationPermission] = useState(() => {
-    if (!("Notification" in window)) {
-      return "unsupported";
-    }
+  const {
+    activeReminders,
+    notificationOpen,
+    openNotifications,
+    closeNotifications,
+  } = useReminderContext();
 
-    return Notification.permission;
-  });
-
-  const [showNotificationMessage, setShowNotificationMessage] = useState(false);
-
-  useEffect(() => {
-    function updatePermission() {
-      if (!("Notification" in window)) {
-        setNotificationPermission("unsupported");
-        return;
-      }
-
-      setNotificationPermission(Notification.permission);
-    }
-
-    updatePermission();
-  }, []);
-
-  async function handleNotificationPermission() {
-    if (notificationPermission === "denied") {
-      setShowNotificationMessage(true);
+  function handleNotificationClick() {
+    if (notificationOpen) {
+      closeNotifications();
       return;
     }
 
-    const granted = await requestNotificationPermission();
-
-    if (!("Notification" in window)) {
-      setNotificationPermission("unsupported");
-      return;
-    }
-
-    setNotificationPermission(granted ? "granted" : Notification.permission);
-
-    setShowNotificationMessage(false);
-  }
-
-  function handleChange(event) {
-    setLanguage(event.target.value);
-  }
-
-  function getNotificationIcon() {
-    if (notificationPermission === "granted") {
-      return "🔔";
-    }
-
-    if (notificationPermission === "denied") {
-      return "🔕";
-    }
-
-    return "🔔";
-  }
-
-  function getNotificationMessage() {
-    if (notificationPermission === "denied") {
-      return "As notificações estão bloqueadas no navegador. Altere a permissão nas configurações deste site.";
-    }
-
-    if (notificationPermission === "unsupported") {
-      return "Este navegador não oferece suporte a notificações.";
-    }
-
-    return "Clique para permitir as notificações do Lembrol.";
+    openNotifications();
   }
 
   return (
     <div className="relative flex items-center gap-2">
       <select
         value={language}
-        onChange={handleChange}
-        className="px-3 py-2 rounded-md bg-stone-200 text-stone-700 focus:outline-none"
+        onChange={(event) => setLanguage(event.target.value)}
+        className="lembrol-select lembrol-language-select"
       >
         <option value="pt-BR">Português (Brasil)</option>
         <option value="en-US">English (US)</option>
@@ -87,18 +33,19 @@ export default function LanguageSelector() {
 
       <button
         type="button"
-        onClick={handleNotificationPermission}
-        className="px-3 py-2 rounded-md bg-stone-200 text-stone-700 hover:bg-stone-300"
+        onClick={handleNotificationClick}
+        className="lembrol-icon-button relative"
         title="Notifications"
+        aria-label="Notifications"
+        aria-expanded={notificationOpen}
       >
-        {getNotificationIcon()}
+        🔔
+        {activeReminders.length > 0 && (
+          <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full border border-violet-950 bg-red-500 px-1 text-[10px] font-bold leading-none text-white shadow-lg">
+            {activeReminders.length > 9 ? "9+" : activeReminders.length}
+          </span>
+        )}
       </button>
-
-      {showNotificationMessage && (
-        <div className="absolute right-0 top-12 z-50 w-72 rounded-md bg-stone-800 p-3 text-sm text-white shadow-lg">
-          {getNotificationMessage()}
-        </div>
-      )}
     </div>
   );
 }

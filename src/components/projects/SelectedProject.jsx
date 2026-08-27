@@ -33,14 +33,6 @@ export default function SelectedProject() {
     setShowDeleteConfirmation(false);
   }
 
-  function handleStartEditing() {
-    setIsEditing(true);
-  }
-
-  function handleCloseEditing() {
-    setIsEditing(false);
-  }
-
   function formatDate(date) {
     if (!date) {
       return null;
@@ -54,22 +46,29 @@ export default function SelectedProject() {
   }
 
   return (
-    <div className="w-full max-w-3xl">
+    <div className="w-full max-w-5xl">
       {!isEditing && (
         <>
-          <div className="flex items-start justify-between gap-6">
-            <div>
-              <h1 className="text-3xl font-bold text-stone-800">
+          <div className="lembrol-project-header">
+            <div className="min-w-0">
+              <p className="lembrol-section-kicker">
+                {t("projects", "title")}
+              </p>
+
+              <h1 className="mt-2 break-words text-3xl font-bold text-slate-100 md:text-4xl">
                 {project.title}
               </h1>
 
               {project.description && (
-                <p className="mt-2 text-stone-600">{project.description}</p>
+                <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-400">
+                  {project.description}
+                </p>
               )}
 
               {project.dueDate && (
-                <p className="mt-2 text-sm text-stone-400">
-                  {t("projects", "dueDateLabel")}: {formatDate(project.dueDate)}
+                <p className="mt-3 text-sm text-violet-200/55">
+                  {t("projects", "dueDateLabel")}:{" "}
+                  {formatDate(project.dueDate)}
                 </p>
               )}
             </div>
@@ -77,8 +76,8 @@ export default function SelectedProject() {
             <div className="flex shrink-0 gap-3">
               <button
                 type="button"
-                onClick={handleStartEditing}
-                className="text-stone-700 hover:text-stone-950"
+                onClick={() => setIsEditing(true)}
+                className="lembrol-text-button"
               >
                 {t("common", "edit")}
               </button>
@@ -86,7 +85,7 @@ export default function SelectedProject() {
               <button
                 type="button"
                 onClick={() => setShowDeleteConfirmation(true)}
-                className="text-stone-700 hover:text-red-500"
+                className="lembrol-text-button lembrol-text-button--danger"
               >
                 {t("common", "delete")}
               </button>
@@ -98,10 +97,10 @@ export default function SelectedProject() {
       )}
 
       {isEditing && (
-        <EditProject project={project} onClose={handleCloseEditing} />
+        <EditProject project={project} onClose={() => setIsEditing(false)} />
       )}
 
-      <div className="mt-8">
+      <div className="mt-10">
         <Tasks projectId={project.id} />
       </div>
 

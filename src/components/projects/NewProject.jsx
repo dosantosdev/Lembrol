@@ -12,12 +12,12 @@ export default function NewProject() {
   const modal = useRef();
   const title = useRef();
   const description = useRef();
-  const duedate = useRef();
+  const dueDate = useRef();
 
   function handleSave() {
     const enteredTitle = title.current.value;
     const enteredDescription = description.current.value;
-    const enteredDueDate = duedate.current.value;
+    const enteredDueDate = dueDate.current.value;
 
     if (
       enteredTitle.trim() === "" ||
@@ -48,41 +48,32 @@ export default function NewProject() {
   return (
     <>
       <Modal ref={modal} buttonCaption={t("common", "okay")}>
-        <h2 className="text-xl font-bold text-stone-700 my-4">
+        <div className="lembrol-modal-icon">✦</div>
+
+        <h2 className="text-xl font-bold text-slate-100">
           {t("validation", "invalidInput")}
         </h2>
 
-        <p className="text-stone-600 mb-4">
+        <p className="mt-3 text-slate-300">
           {t("validation", "missingValues")}
         </p>
 
-        <p className="text-stone-600 mb-4">
+        <p className="mt-3 text-sm text-slate-400">
           {t("validation", "requiredFields")}
         </p>
       </Modal>
 
-      <div className="w-140 mt-16">
-        <menu className="flex items-center justify-end gap-4 my-4">
-          <li>
-            <button
-              className="text-stone-800 hover:text-stone-950"
-              onClick={handleCancel}
-            >
-              {t("common", "cancel")}
-            </button>
-          </li>
+      <div className="w-full max-w-3xl">
+        <div className="mb-8">
+          <p className="lembrol-section-kicker">
+            {t("projects", "create")}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold text-slate-100">
+            {t("projects", "create")}
+          </h1>
+        </div>
 
-          <li>
-            <button
-              className="px-6 py-2 rounded-md bg-stone-800 text-stone-50 hover:text-stone-950"
-              onClick={handleSave}
-            >
-              {t("common", "save")}
-            </button>
-          </li>
-        </menu>
-
-        <div>
+        <div className="lembrol-form-card">
           <Input type="text" ref={title} label={t("projects", "titleLabel")} />
 
           <Input
@@ -93,9 +84,27 @@ export default function NewProject() {
 
           <Input
             type="date"
-            ref={duedate}
+            ref={dueDate}
             label={t("projects", "dueDateLabel")}
           />
+
+          <div className="mt-6 flex justify-end gap-3">
+            <button
+              type="button"
+              className="lembrol-secondary-button"
+              onClick={handleCancel}
+            >
+              {t("common", "cancel")}
+            </button>
+
+            <button
+              type="button"
+              className="lembrol-primary-button"
+              onClick={handleSave}
+            >
+              {t("common", "save")}
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -1,6 +1,5 @@
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { createPortal } from "react-dom";
-import Button from "./Button.jsx";
 
 const Modal = forwardRef(function Modal({ children, buttonCaption }, ref) {
   const dialog = useRef();
@@ -14,15 +13,16 @@ const Modal = forwardRef(function Modal({ children, buttonCaption }, ref) {
   });
 
   return createPortal(
-    <dialog
-      ref={dialog}
-      className="fixed left-1/2 top-1/2 m-0 w-[90%] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-md p-4 shadow-md backdrop:bg-stone-900/90"
-    >
-      {children}
+    <dialog ref={dialog} className="lembrol-modal">
+      <div className="lembrol-modal__content">
+        {children}
 
-      <form method="dialog" className="mt-4 text-right">
-        <Button>{buttonCaption}</Button>
-      </form>
+        <form method="dialog" className="mt-6 flex justify-end">
+          <button type="submit" className="lembrol-primary-button">
+            {buttonCaption}
+          </button>
+        </form>
+      </div>
     </dialog>,
     document.getElementById("modal-root"),
   );

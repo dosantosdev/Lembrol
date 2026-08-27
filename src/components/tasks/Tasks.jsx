@@ -20,17 +20,12 @@ export default function Tasks({ projectId }) {
   );
 
   const pendingTasks = useMemo(() => {
-    const priorityOrder = {
-      high: 1,
-      medium: 2,
-      low: 3,
-    };
+    const priorityOrder = { high: 1, medium: 2, low: 3 };
 
     return projectTasks
       .filter((task) => !task.completed)
       .sort((taskA, taskB) => {
         const priorityA = priorityOrder[taskA.priority] ?? 2;
-
         const priorityB = priorityOrder[taskB.priority] ?? 2;
 
         if (priorityA !== priorityB) {
@@ -40,25 +35,12 @@ export default function Tasks({ projectId }) {
         const taskAOverdue = isTaskOverdue(taskA);
         const taskBOverdue = isTaskOverdue(taskB);
 
-        if (taskAOverdue && !taskBOverdue) {
-          return -1;
-        }
+        if (taskAOverdue && !taskBOverdue) return -1;
+        if (!taskAOverdue && taskBOverdue) return 1;
 
-        if (!taskAOverdue && taskBOverdue) {
-          return 1;
-        }
-
-        if (!taskA.dueDate && !taskB.dueDate) {
-          return 0;
-        }
-
-        if (!taskA.dueDate) {
-          return 1;
-        }
-
-        if (!taskB.dueDate) {
-          return -1;
-        }
+        if (!taskA.dueDate && !taskB.dueDate) return 0;
+        if (!taskA.dueDate) return 1;
+        if (!taskB.dueDate) return -1;
 
         return (
           new Date(`${taskA.dueDate}T00:00:00`) -
@@ -71,13 +53,8 @@ export default function Tasks({ projectId }) {
     return projectTasks
       .filter((task) => task.completed)
       .sort((taskA, taskB) => {
-        if (!taskA.completedAt) {
-          return 1;
-        }
-
-        if (!taskB.completedAt) {
-          return -1;
-        }
+        if (!taskA.completedAt) return 1;
+        if (!taskB.completedAt) return -1;
 
         return new Date(taskB.completedAt) - new Date(taskA.completedAt);
       });
@@ -112,18 +89,8 @@ export default function Tasks({ projectId }) {
     });
   }
 
-  function handleEditTask(id) {
-    setEditingTaskId(id);
-  }
-
-  function handleCloseEdit() {
-    setEditingTaskId(null);
-  }
-
   function formatTaskDate(date) {
-    if (!date) {
-      return null;
-    }
+    if (!date) return null;
 
     return new Date(`${date}T00:00:00`).toLocaleDateString(language, {
       year: "numeric",
@@ -136,25 +103,25 @@ export default function Tasks({ projectId }) {
     const overdue = isTaskOverdue(task);
 
     return (
-      <li key={task.id} className="my-4">
+      <li key={task.id} className="lembrol-task-item">
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-3">
+          <div className="flex min-w-0 items-start gap-3">
             <input
               type="checkbox"
               checked={task.completed}
               onChange={() => handleToggleTask(task.id)}
-              className="mt-1"
+              className="lembrol-checkbox mt-1.5"
             />
 
-            <div>
+            <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <span
                   className={
                     task.completed
-                      ? "text-stone-400 line-through"
+                      ? "text-slate-500 line-through"
                       : overdue
-                        ? "font-medium text-red-700"
-                        : "text-stone-800"
+                        ? "font-semibold text-rose-300"
+                        : "font-medium text-slate-100"
                   }
                 >
                   {task.text}
@@ -164,23 +131,21 @@ export default function Tasks({ projectId }) {
               </div>
 
               {task.completed && (
-                <div className="mt-1 text-sm text-stone-400">
+                <div className="mt-1 text-xs text-slate-500">
                   {t("tasks", "completed")}
                 </div>
               )}
 
-              {overdue && (
-                <div className="mt-1 text-sm font-medium text-red-600">
+              {overdue && !task.completed && (
+                <div className="mt-1 text-xs font-medium text-rose-300">
                   {t("tasks", "overdue")}
                 </div>
               )}
 
               {(task.dueDate || task.dueTime) && (
-                <div className="mt-1 text-sm text-stone-400">
+                <div className="mt-1 text-xs text-slate-500">
                   {task.dueDate && formatTaskDate(task.dueDate)}
-
                   {task.dueDate && task.dueTime && " • "}
-
                   {task.dueTime}
                 </div>
               )}
@@ -190,15 +155,15 @@ export default function Tasks({ projectId }) {
           <div className="flex shrink-0 gap-3">
             <button
               type="button"
-              className="text-stone-700 hover:text-stone-950"
-              onClick={() => handleEditTask(task.id)}
+              className="lembrol-inline-button"
+              onClick={() => setEditingTaskId(task.id)}
             >
               {t("common", "edit")}
             </button>
 
             <button
               type="button"
-              className="text-stone-700 hover:text-red-500"
+              className="lembrol-inline-button lembrol-inline-button--danger"
               onClick={() => setDeletingTaskId(task.id)}
             >
               {t("common", "clear")}
@@ -207,7 +172,7 @@ export default function Tasks({ projectId }) {
         </div>
 
         {editingTaskId === task.id && (
-          <EditTask task={task} onClose={handleCloseEdit} />
+          <EditTask task={task} onClose={() => setEditingTaskId(null)} />
         )}
       </li>
     );
@@ -215,31 +180,32 @@ export default function Tasks({ projectId }) {
 
   return (
     <section>
-      <h2 className="mb-4 text-2xl font-bold text-stone-700">
-        {t("tasks", "title")}
-      </h2>
+      <div className="mb-5">
+        <p className="lembrol-section-kicker">{t("tasks", "title")}</p>
+        <h2 className="mt-1 text-2xl font-bold text-slate-100">
+          {t("tasks", "title")}
+        </h2>
+      </div>
 
       <NewTask onAdd={handleAddTask} />
 
       {pendingTasks.length > 0 && (
         <div className="mt-8">
-          <h3 className="mb-3 text-lg font-bold text-stone-700">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-violet-200/55">
             {t("tasks", "pending")}
           </h3>
 
-          <ul className="rounded-md bg-stone-100 p-4">
-            {pendingTasks.map(renderTask)}
-          </ul>
+          <ul className="lembrol-task-list">{pendingTasks.map(renderTask)}</ul>
         </div>
       )}
 
       {completedTasks.length > 0 && (
         <div className="mt-8">
-          <h3 className="mb-3 text-lg font-bold text-stone-500">
+          <h3 className="mb-3 text-sm font-semibold uppercase tracking-[0.16em] text-slate-500">
             {t("tasks", "completedTitle")}
           </h3>
 
-          <ul className="rounded-md bg-stone-100 p-4 opacity-80">
+          <ul className="lembrol-task-list lembrol-task-list--completed">
             {completedTasks.map(renderTask)}
           </ul>
         </div>

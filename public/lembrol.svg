@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="orb" cx="35%" cy="30%">
+      <stop offset="0%" stop-color="#fda4af"></stop>
+      <stop offset="35%" stop-color="#fb7185"></stop>
+      <stop offset="70%" stop-color="#7c3aed"></stop>
+      <stop offset="100%" stop-color="#1e1238"></stop>
+    </radialGradient>
+
+    <radialGradient id="glow">
+      <stop offset="0%" stop-color="#f472b6" stop-opacity="0.7"></stop>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"></stop>
+    </radialGradient>
+
+    <linearGradient id="smoke" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#a78bfa" stop-opacity="0.8"></stop>
+      <stop offset="100%" stop-color="#f9a8d4" stop-opacity="0"></stop>
+    </linearGradient>
+  </defs>
+
+  <!-- Glow -->
+  <circle cx="32" cy="36" r="27" fill="url(#glow)"></circle>
+
+  <!-- Smoke -->
+  <path d="M29 19
+       C22 14, 29 10, 25 5
+       C33 9, 37 5, 34 1
+       C43 8, 38 14, 34 18
+       C32 20, 31 21, 29 19Z" fill="url(#smoke)" opacity="0.85"></path>
+
+  <!-- Orb -->
+  <circle cx="32" cy="36" r="17" fill="url(#orb)" stroke="#d8b4fe" stroke-opacity="0.55" stroke-width="1.5"></circle>
+
+  <!-- Glass highlight -->
+  <ellipse cx="26" cy="29" rx="5" ry="3" fill="#ffffff" opacity="0.28" transform="rotate(-25 26 29)"></ellipse>
+
+  <!-- Inner glow -->
+  <circle cx="32" cy="37" r="6" fill="#fb7185" opacity="0.65"></circle>
+
+  <!-- Base -->
+  <path d="M21 53
+       C24 49, 40 49, 43 53
+       L40 57
+       H24Z" fill="#171329" stroke="#a78bfa" stroke-opacity="0.5" stroke-width="1"></path>
+</svg>

@@ -12,6 +12,7 @@ const ptBR = {
 
   projects: {
     title: "Seus projetos",
+    noProjects: "Nenhum projeto criado ainda.",
     add: "Adicionar projeto",
     create: "Criar novo projeto",
     noSelected: "Nenhum projeto selecionado",
@@ -61,6 +62,8 @@ const ptBR = {
   reminders: {
     title: "Lembrete!",
     message: "Você tem uma tarefa para lembrar:",
+    emptyTitle: "Notificações",
+    empty: "Você não tem nenhuma notificação no momento.",
   },
 
   settings: {
@@ -75,6 +78,12 @@ const ptBR = {
     invalidInput: "Entrada inválida",
     missingValues: "Parece que você esqueceu de preencher algum campo.",
     requiredFields: "Certifique-se de preencher corretamente todos os campos.",
+  },
+
+  lembrol: {
+    statusCalm: "Tudo em ordem",
+    statusWarning: "Há tarefas próximas do vencimento",
+    statusAlert: "Há algo que precisa da sua atenção",
   },
 };
 

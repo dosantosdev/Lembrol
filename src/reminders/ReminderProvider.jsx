@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { useProjectContext } from "../store/ProjectContext.jsx";
 import { shouldRemind, getReminderDate } from "./reminderService.js";
 import { triggerReminderAlert } from "./alertService.js";
@@ -25,6 +25,10 @@ export function ReminderProvider({ children }) {
 
   const [activeReminders, setActiveReminders] = useState([]);
 
+  const [notificationOpen, setNotificationOpen] = useState(false);
+
+  const [notificationMode, setNotificationMode] = useState("alert");
+
   const [dismissedReminders, setDismissedReminders] = useState(
     new Set(storedReminderState.dismissedReminders),
   );
@@ -32,6 +36,8 @@ export function ReminderProvider({ children }) {
   const [notifiedReminders, setNotifiedReminders] = useState(
     new Set(storedReminderState.notifiedReminders),
   );
+
+  const notificationTimerRef = useRef(null);
 
   useEffect(() => {
     const existingReminderKeys = new Set();
@@ -91,6 +97,22 @@ export function ReminderProvider({ children }) {
           triggerReminderAlert(task, settings.reminders);
         });
 
+        // Novo lembrete aparece como alerta automático.
+        setNotificationMode("alert");
+        setNotificationOpen(true);
+
+        // Cancela somente um temporizador anterior,
+        // caso ainda exista.
+        if (notificationTimerRef.current) {
+          clearTimeout(notificationTimerRef.current);
+        }
+
+        // O alerta automático permanece por 8 segundos.
+        notificationTimerRef.current = setTimeout(() => {
+          setNotificationOpen(false);
+          notificationTimerRef.current = null;
+        }, 8000);
+
         setNotifiedReminders((previous) => {
           const updated = new Set(previous);
 
@@ -116,6 +138,16 @@ export function ReminderProvider({ children }) {
     };
   }, [projectsState.tasks, dismissedReminders, notifiedReminders, settings]);
 
+  // Limpa o temporizador somente quando o Provider
+  // for desmontado, e não a cada atualização do estado.
+  useEffect(() => {
+    return () => {
+      if (notificationTimerRef.current) {
+        clearTimeout(notificationTimerRef.current);
+      }
+    };
+  }, []);
+
   function dismissReminder(taskId) {
     const task = projectsState.tasks.find((item) => item.id === taskId);
 
@@ -131,9 +163,32 @@ export function ReminderProvider({ children }) {
       });
     }
 
-    setActiveReminders((previous) =>
-      previous.filter((task) => task.id !== taskId),
-    );
+    setActiveReminders((previous) => {
+      const updated = previous.filter((task) => task.id !== taskId);
+
+      if (updated.length === 0) {
+        setNotificationOpen(false);
+      }
+
+      return updated;
+    });
+  }
+
+  function openNotifications() {
+    // O usuário abriu pelo sino.
+    // Nesse momento, o alerta deixa de ser controlado
+    // pelo temporizador automático.
+    if (notificationTimerRef.current) {
+      clearTimeout(notificationTimerRef.current);
+      notificationTimerRef.current = null;
+    }
+
+    setNotificationMode("bell");
+    setNotificationOpen(true);
+  }
+
+  function closeNotifications() {
+    setNotificationOpen(false);
   }
 
   return (
@@ -141,7 +196,11 @@ export function ReminderProvider({ children }) {
       value={{
         activeReminders,
         notifiedReminders,
+        notificationOpen,
+        notificationMode,
         dismissReminder,
+        openNotifications,
+        closeNotifications,
       }}
     >
       {children}

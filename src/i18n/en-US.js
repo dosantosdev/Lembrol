@@ -12,6 +12,7 @@ const enUS = {
 
   projects: {
     title: "Your Projects",
+    noProjects: "No projects created yet.",
     add: "Add Project",
     create: "Create new project",
     noSelected: "No Project Selected",
@@ -61,6 +62,8 @@ const enUS = {
   reminders: {
     title: "Reminder!",
     message: "You have a task to remember:",
+    emptyTitle: "Notifications",
+    empty: "You don't have any notifications right now.",
   },
 
   settings: {
@@ -76,6 +79,12 @@ const enUS = {
     missingValues: "Oops... looks like you forgot to enter a value.",
     requiredFields:
       "Please make sure you provide a valid value for every input field.",
+  },
+
+  lembrol: {
+    statusCalm: "Everything is in order",
+    statusWarning: "There are tasks approaching their due date",
+    statusAlert: "Something needs your attention",
   },
 };
 

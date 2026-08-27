@@ -6,24 +6,24 @@ export default function TaskPriority({ priority }) {
   const priorityConfig = {
     high: {
       label: t("tasks", "priorityHigh"),
-      color: "bg-red-500",
+      className: "lembrol-priority--high",
     },
     medium: {
       label: t("tasks", "priorityMedium"),
-      color: "bg-yellow-400",
+      className: "lembrol-priority--medium",
     },
     low: {
       label: t("tasks", "priorityLow"),
-      color: "bg-green-500",
+      className: "lembrol-priority--low",
     },
   };
 
-  const currentPriority = priorityConfig[priority] || priorityConfig.medium;
+  const currentPriority =
+    priorityConfig[priority] || priorityConfig.medium;
 
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs font-medium text-stone-500">
-      <span className={`h-2.5 w-2.5 rounded-full ${currentPriority.color}`} />
-
+    <span className={`lembrol-priority ${currentPriority.className}`}>
+      <span className="lembrol-priority__dot" />
       {currentPriority.label}
     </span>
   );

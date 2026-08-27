@@ -31,10 +31,17 @@ export default function EditProject({ project, onClose }) {
   }
 
   return (
-    <form onSubmit={handleSave} className="mt-4 rounded-md bg-stone-200 p-4">
-      <div className="space-y-3">
+    <form onSubmit={handleSave} className="lembrol-form-card">
+      <div className="mb-6">
+        <p className="lembrol-section-kicker">{t("common", "edit")}</p>
+        <h1 className="mt-2 text-2xl font-bold text-slate-100">
+          {project.title}
+        </h1>
+      </div>
+
+      <div className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">
             {t("projects", "titleLabel")}
           </label>
 
@@ -42,12 +49,12 @@ export default function EditProject({ project, onClose }) {
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none"
+            className="lembrol-input"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">
             {t("projects", "descriptionLabel")}
           </label>
 
@@ -55,12 +62,12 @@ export default function EditProject({ project, onClose }) {
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             rows="3"
-            className="mt-1 w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none"
+            className="lembrol-input resize-y"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-stone-700">
+          <label className="lembrol-label">
             {t("projects", "dueDateLabel")}
           </label>
 
@@ -68,25 +75,22 @@ export default function EditProject({ project, onClose }) {
             type="date"
             value={dueDate}
             onChange={(event) => setDueDate(event.target.value)}
-            className="mt-1 rounded-md border border-stone-300 bg-white px-3 py-2 text-stone-700 focus:outline-none"
+            className="lembrol-input max-w-xs"
           />
         </div>
       </div>
 
-      <div className="mt-4 flex gap-3">
-        <button
-          type="submit"
-          className="rounded-md bg-stone-700 px-4 py-2 text-sm font-medium text-white hover:bg-stone-800"
-        >
-          {t("common", "save")}
-        </button>
-
+      <div className="mt-6 flex justify-end gap-3">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-md bg-stone-300 px-4 py-2 text-sm font-medium text-stone-700 hover:bg-stone-400"
+          className="lembrol-secondary-button"
         >
           {t("common", "cancel")}
+        </button>
+
+        <button type="submit" className="lembrol-primary-button">
+          {t("common", "save")}
         </button>
       </div>
     </form>

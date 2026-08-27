@@ -6,6 +6,7 @@ import SelectedProject from "./components/projects/SelectedProject.jsx";
 import LanguageSelector from "./components/LanguageSelector.jsx";
 import ReminderNotification from "./components/reminders/ReminderNotification.jsx";
 import SettingsPanel from "./components/settings/SettingsPanel.jsx";
+import LembrolBrand from "./components/LembrolBrand.jsx";
 
 function App() {
   const { projectsState } = useProjectContext();
@@ -21,19 +22,30 @@ function App() {
   }
 
   return (
-    <main className="h-screen my-8 flex gap-8">
-      <ProjectsSidebar />
+    <main className="min-h-screen p-3 md:p-5 lg:p-6">
+      <div className="lembrol-shell min-h-[calc(100vh-1.5rem)] overflow-hidden">
+        <ProjectsSidebar />
 
-      <div className="flex-1 relative">
-        <div className="absolute top-0 right-8 flex items-center gap-2">
-          <LanguageSelector />
-          <SettingsPanel />
-        </div>
+        <section className="relative min-w-0 flex-1">
+          <header className="lembrol-topbar">
+            <div className="lg:hidden">
+              <LembrolBrand compact />
+            </div>
 
-        {content}
+            <div className="flex items-center gap-2">
+              <LanguageSelector />
+
+              <div className="lembrol-notification-wrapper">
+                <ReminderNotification />
+              </div>
+
+              <SettingsPanel />
+            </div>
+          </header>
+
+          <div className="lembrol-content">{content}</div>
+        </section>
       </div>
-
-      <ReminderNotification />
     </main>
   );
 }
