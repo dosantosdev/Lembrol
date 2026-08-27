@@ -221,10 +221,6 @@ export default function Tasks({ projectId }) {
 
       <NewTask onAdd={handleAddTask} />
 
-      {projectTasks.length === 0 && (
-        <p className="my-4 text-stone-800">{t("tasks", "empty")}</p>
-      )}
-
       {pendingTasks.length > 0 && (
         <div className="mt-8">
           <h3 className="mb-3 text-lg font-bold text-stone-700">
