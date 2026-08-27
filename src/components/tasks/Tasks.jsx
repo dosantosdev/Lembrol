@@ -6,6 +6,7 @@ import { generateId } from "../../utils/id.js";
 import ConfirmDialog from "../ui/ConfirmDialog.jsx";
 import NewTask from "./NewTask.jsx";
 import EditTask from "./EditTask.jsx";
+import TaskPriority from "./TaskPriority.jsx";
 
 export default function Tasks({ projectId }) {
   const { projectsState, dispatch } = useProjectContext();
@@ -131,18 +132,6 @@ export default function Tasks({ projectId }) {
     });
   }
 
-  function getPriorityLabel(priority) {
-    if (priority === "high") {
-      return `🔴 ${t("tasks", "priorityHigh")}`;
-    }
-
-    if (priority === "low") {
-      return `🟢 ${t("tasks", "priorityLow")}`;
-    }
-
-    return `🟡 ${t("tasks", "priorityMedium")}`;
-  }
-
   function renderTask(task) {
     const overdue = isTaskOverdue(task);
 
@@ -171,11 +160,7 @@ export default function Tasks({ projectId }) {
                   {task.text}
                 </span>
 
-                {!task.completed && (
-                  <span className="text-xs font-medium text-stone-500">
-                    {getPriorityLabel(task.priority)}
-                  </span>
-                )}
+                {!task.completed && <TaskPriority priority={task.priority} />}
               </div>
 
               {task.completed && (
