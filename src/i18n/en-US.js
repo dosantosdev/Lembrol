@@ -35,11 +35,20 @@ const enUS = {
     oneHour: "1 hour before",
     complete: "Complete",
     completed: "Completed",
+    overdue: "Overdue task",
   },
 
   reminders: {
     title: "Reminder!",
     message: "You have a task to remember:",
+  },
+
+  settings: {
+    title: "Reminder settings",
+    open: "Open settings",
+    notification: "System notifications",
+    sound: "Sound",
+    visual: "Visual alert",
   },
 
   validation: {

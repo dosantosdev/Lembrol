@@ -35,11 +35,20 @@ const ptBR = {
     oneHour: "1 hora antes",
     complete: "Concluir",
     completed: "Concluída",
+    overdue: "Tarefa atrasada",
   },
 
   reminders: {
     title: "Lembrete!",
     message: "Você tem uma tarefa para lembrar:",
+  },
+
+  settings: {
+    title: "Configurações de lembrete",
+    open: "Abrir configurações",
+    notification: "Notificações do sistema",
+    sound: "Som",
+    visual: "Alerta visual",
   },
 
   validation: {

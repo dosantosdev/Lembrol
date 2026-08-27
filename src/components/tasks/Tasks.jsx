@@ -1,6 +1,7 @@
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
 import { generateId } from "../../utils/id.js";
+import { isTaskOverdue } from "../../reminders/reminderService.js";
 import NewTask from "./NewTask.jsx";
 
 export default function Tasks({ projectId }) {
@@ -62,56 +63,68 @@ export default function Tasks({ projectId }) {
 
       {projectTasks.length > 0 && (
         <ul className="p-4 mt-8 rounded-md bg-stone-100">
-          {projectTasks.map((task) => (
-            <li
-              key={task.id}
-              className="flex justify-between items-start my-4 gap-4"
-            >
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  checked={task.completed}
-                  onChange={() => handleToggleTask(task.id)}
-                  className="mt-1"
-                />
+          {projectTasks.map((task) => {
+            const overdue = isTaskOverdue(task);
 
-                <div>
-                  <span
-                    className={
-                      task.completed
-                        ? "line-through text-stone-400"
-                        : "text-stone-800"
-                    }
-                  >
-                    {task.text}
-                  </span>
-
-                  {task.completed && (
-                    <div className="text-sm text-stone-400 mt-1">
-                      {t("tasks", "completed")}
-                    </div>
-                  )}
-
-                  {(task.dueDate || task.dueTime) && (
-                    <div className="text-sm text-stone-400 mt-1">
-                      {task.dueDate && formatTaskDate(task.dueDate)}
-
-                      {task.dueDate && task.dueTime && " • "}
-
-                      {task.dueTime}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <button
-                className="text-stone-700 hover:text-red-500"
-                onClick={() => handleDeleteTask(task.id)}
+            return (
+              <li
+                key={task.id}
+                className="flex justify-between items-start my-4 gap-4"
               >
-                {t("common", "clear")}
-              </button>
-            </li>
-          ))}
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={() => handleToggleTask(task.id)}
+                    className="mt-1"
+                  />
+
+                  <div>
+                    <span
+                      className={
+                        task.completed
+                          ? "line-through text-stone-400"
+                          : overdue
+                            ? "text-red-700 font-medium"
+                            : "text-stone-800"
+                      }
+                    >
+                      {task.text}
+                    </span>
+
+                    {task.completed && (
+                      <div className="text-sm text-stone-400 mt-1">
+                        {t("tasks", "completed")}
+                      </div>
+                    )}
+
+                    {overdue && (
+                      <div className="text-sm text-red-600 mt-1 font-medium">
+                        {t("tasks", "overdue")}
+                      </div>
+                    )}
+
+                    {(task.dueDate || task.dueTime) && (
+                      <div className="text-sm text-stone-400 mt-1">
+                        {task.dueDate && formatTaskDate(task.dueDate)}
+
+                        {task.dueDate && task.dueTime && " • "}
+
+                        {task.dueTime}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  className="text-stone-700 hover:text-red-500"
+                  onClick={() => handleDeleteTask(task.id)}
+                >
+                  {t("common", "clear")}
+                </button>
+              </li>
+            );
+          })}
         </ul>
       )}
     </section>
