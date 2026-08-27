@@ -51,11 +51,9 @@ export default function SelectedProject() {
         <>
           <div className="lembrol-project-header">
             <div className="min-w-0">
-              <p className="lembrol-section-kicker">
-                {t("projects", "title")}
-              </p>
+              <p className="lembrol-section-kicker">{t("projects", "title")}</p>
 
-              <h1 className="mt-2 break-words text-3xl font-bold text-slate-100 md:text-4xl">
+              <h1 className="mt-2 break-word text-3xl font-bold text-slate-100 md:text-4xl">
                 {project.title}
               </h1>
 
@@ -67,8 +65,7 @@ export default function SelectedProject() {
 
               {project.dueDate && (
                 <p className="mt-3 text-sm text-violet-200/55">
-                  {t("projects", "dueDateLabel")}:{" "}
-                  {formatDate(project.dueDate)}
+                  {t("projects", "dueDateLabel")}: {formatDate(project.dueDate)}
                 </p>
               )}
             </div>

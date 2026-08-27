@@ -26,13 +26,15 @@ export default function ProjectProgress({ tasks }) {
 
       <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-500 via-fuchsia-400 to-amber-300 transition-all duration-500"
+          className="h-full rounded-full bg-linear-to-r from-violet-500 via-fuchsia-400 to-amber-300 transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {totalTasks === 0 ? (
-        <p className="mt-3 text-sm text-slate-400">{t("projects", "noTasks")}</p>
+        <p className="mt-3 text-sm text-slate-400">
+          {t("projects", "noTasks")}
+        </p>
       ) : (
         <div className="mt-3 flex gap-4 text-sm text-slate-400">
           <span>
