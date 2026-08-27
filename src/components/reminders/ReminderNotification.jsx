@@ -1,12 +1,14 @@
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useReminderContext } from "../../reminders/ReminderProvider.jsx";
+import { useSettings } from "../../store/SettingsContext.jsx";
 
 export default function ReminderNotification() {
-  const { activeReminders, dismissReminder, settings } = useReminderContext();
+  const { activeReminders, dismissReminder } = useReminderContext();
 
+  const { settings } = useSettings();
   const { t } = useLanguage();
 
-  if (!settings.visual || activeReminders.length === 0) {
+  if (!settings.reminders.visual || activeReminders.length === 0) {
     return null;
   }
 

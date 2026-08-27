@@ -3,33 +3,9 @@ import { useProjectContext } from "../store/ProjectContext.jsx";
 import { shouldRemind, getReminderDate } from "./reminderService.js";
 import { triggerReminderAlert } from "./alertService.js";
 import { loadReminderState, saveReminderState } from "./reminderStorage.js";
+import { useSettings } from "../store/SettingsContext.jsx";
 
 const ReminderContext = createContext();
-
-const SETTINGS_STORAGE_KEY = "lembrol-reminder-settings";
-
-const defaultSettings = {
-  notification: true,
-  sound: true,
-  visual: true,
-};
-
-function loadSettings() {
-  const storedSettings = localStorage.getItem(SETTINGS_STORAGE_KEY);
-
-  if (!storedSettings) {
-    return defaultSettings;
-  }
-
-  try {
-    return {
-      ...defaultSettings,
-      ...JSON.parse(storedSettings),
-    };
-  } catch {
-    return defaultSettings;
-  }
-}
 
 function getReminderKey(task) {
   const reminderDate = getReminderDate(task);
@@ -45,6 +21,7 @@ const storedReminderState = loadReminderState();
 
 export function ReminderProvider({ children }) {
   const { projectsState } = useProjectContext();
+  const { settings } = useSettings();
 
   const [activeReminders, setActiveReminders] = useState([]);
 
@@ -55,8 +32,6 @@ export function ReminderProvider({ children }) {
   const [notifiedReminders, setNotifiedReminders] = useState(
     new Set(storedReminderState.notifiedReminders),
   );
-
-  const [settings, setSettings] = useState(loadSettings);
 
   useEffect(() => {
     const existingReminderKeys = new Set();
@@ -70,19 +45,15 @@ export function ReminderProvider({ children }) {
     });
 
     setDismissedReminders((previous) => {
-      const cleaned = new Set(
+      return new Set(
         [...previous].filter((key) => existingReminderKeys.has(key)),
       );
-
-      return cleaned;
     });
 
     setNotifiedReminders((previous) => {
-      const cleaned = new Set(
+      return new Set(
         [...previous].filter((key) => existingReminderKeys.has(key)),
       );
-
-      return cleaned;
     });
   }, [projectsState.tasks]);
 
@@ -117,7 +88,7 @@ export function ReminderProvider({ children }) {
 
       if (newNotifications.length > 0) {
         newNotifications.forEach((task) => {
-          triggerReminderAlert(task, settings);
+          triggerReminderAlert(task, settings.reminders);
         });
 
         setNotifiedReminders((previous) => {
@@ -171,8 +142,6 @@ export function ReminderProvider({ children }) {
         activeReminders,
         notifiedReminders,
         dismissReminder,
-        settings,
-        setSettings,
       }}
     >
       {children}

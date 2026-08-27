@@ -1,22 +1,14 @@
-import { useEffect } from "react";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
-import { useReminderContext } from "../../reminders/ReminderProvider.jsx";
-
-const SETTINGS_STORAGE_KEY = "lembrol-reminder-settings";
+import { useSettings } from "../../store/SettingsContext.jsx";
 
 export default function ReminderSettings() {
   const { t } = useLanguage();
-  const { settings, setSettings } = useReminderContext();
-
-  useEffect(() => {
-    localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
-  }, [settings]);
+  const { settings, updateReminderSettings } = useSettings();
 
   function handleChange(setting) {
-    setSettings((previousSettings) => ({
-      ...previousSettings,
-      [setting]: !previousSettings[setting],
-    }));
+    updateReminderSettings({
+      [setting]: !settings.reminders[setting],
+    });
   }
 
   return (
@@ -27,7 +19,7 @@ export default function ReminderSettings() {
         <label className="flex cursor-pointer items-center gap-3 text-sm text-stone-600">
           <input
             type="checkbox"
-            checked={settings.notification}
+            checked={settings.reminders.notification}
             onChange={() => handleChange("notification")}
             className="h-4 w-4"
           />
@@ -38,7 +30,7 @@ export default function ReminderSettings() {
         <label className="flex cursor-pointer items-center gap-3 text-sm text-stone-600">
           <input
             type="checkbox"
-            checked={settings.sound}
+            checked={settings.reminders.sound}
             onChange={() => handleChange("sound")}
             className="h-4 w-4"
           />
@@ -49,7 +41,7 @@ export default function ReminderSettings() {
         <label className="flex cursor-pointer items-center gap-3 text-sm text-stone-600">
           <input
             type="checkbox"
-            checked={settings.visual}
+            checked={settings.reminders.visual}
             onChange={() => handleChange("visual")}
             className="h-4 w-4"
           />
