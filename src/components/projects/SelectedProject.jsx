@@ -3,6 +3,7 @@ import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
 import ConfirmDialog from "../ui/ConfirmDialog.jsx";
 import EditProject from "./EditProject.jsx";
+import ProjectProgress from "./ProjectProgress.jsx";
 import Tasks from "../tasks/Tasks.jsx";
 
 export default function SelectedProject() {
@@ -19,6 +20,10 @@ export default function SelectedProject() {
   if (!project) {
     return null;
   }
+
+  const projectTasks = projectsState.tasks.filter(
+    (task) => task.projectId === project.id,
+  );
 
   function handleDeleteProject() {
     dispatch({
@@ -51,41 +56,45 @@ export default function SelectedProject() {
   return (
     <div className="w-full max-w-3xl">
       {!isEditing && (
-        <div className="flex items-start justify-between gap-6">
-          <div>
-            <h1 className="text-3xl font-bold text-stone-800">
-              {project.title}
-            </h1>
+        <>
+          <div className="flex items-start justify-between gap-6">
+            <div>
+              <h1 className="text-3xl font-bold text-stone-800">
+                {project.title}
+              </h1>
 
-            {project.description && (
-              <p className="mt-2 text-stone-600">{project.description}</p>
-            )}
+              {project.description && (
+                <p className="mt-2 text-stone-600">{project.description}</p>
+              )}
 
-            {project.dueDate && (
-              <p className="mt-2 text-sm text-stone-400">
-                {t("projects", "dueDateLabel")}: {formatDate(project.dueDate)}
-              </p>
-            )}
+              {project.dueDate && (
+                <p className="mt-2 text-sm text-stone-400">
+                  {t("projects", "dueDateLabel")}: {formatDate(project.dueDate)}
+                </p>
+              )}
+            </div>
+
+            <div className="flex shrink-0 gap-3">
+              <button
+                type="button"
+                onClick={handleStartEditing}
+                className="text-stone-700 hover:text-stone-950"
+              >
+                {t("common", "edit")}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowDeleteConfirmation(true)}
+                className="text-stone-700 hover:text-red-500"
+              >
+                {t("common", "delete")}
+              </button>
+            </div>
           </div>
 
-          <div className="flex shrink-0 gap-3">
-            <button
-              type="button"
-              onClick={handleStartEditing}
-              className="text-stone-700 hover:text-stone-950"
-            >
-              {t("common", "edit")}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowDeleteConfirmation(true)}
-              className="text-stone-700 hover:text-red-500"
-            >
-              {t("common", "delete")}
-            </button>
-          </div>
-        </div>
+          <ProjectProgress tasks={projectTasks} />
+        </>
       )}
 
       {isEditing && (

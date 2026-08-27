@@ -19,6 +19,9 @@ const enUS = {
     titleLabel: "Title",
     descriptionLabel: "Description",
     dueDateLabel: "Due Date",
+    progress: "Progress",
+    totalTasks: "tasks",
+    completedTasks: "completed",
     deleteTitle: "Delete project?",
     deleteMessage:
       "Are you sure you want to delete this project? All tasks in this project will also be deleted.",

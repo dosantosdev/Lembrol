@@ -19,6 +19,9 @@ const ptBR = {
     titleLabel: "Título",
     descriptionLabel: "Descrição",
     dueDateLabel: "Data de vencimento",
+    progress: "Progresso",
+    totalTasks: "tarefas",
+    completedTasks: "concluídas",
     deleteTitle: "Excluir projeto?",
     deleteMessage:
       "Tem certeza que deseja excluir este projeto? Todas as tarefas deste projeto também serão excluídas.",
