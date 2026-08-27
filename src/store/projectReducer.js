@@ -49,6 +49,19 @@ export default function projectReducer(state, action) {
         tasks: [action.payload, ...state.tasks],
       };
 
+    case "UPDATE_TASK":
+      return {
+        ...state,
+        tasks: state.tasks.map((task) =>
+          task.id === action.payload.id
+            ? {
+                ...task,
+                ...action.payload,
+              }
+            : task,
+        ),
+      };
+
     case "DELETE_TASK":
       return {
         ...state,
