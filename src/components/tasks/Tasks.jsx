@@ -1,8 +1,10 @@
-import { useProjectContext } from "../store/ProjectContext.jsx";
+import { useLanguage } from "../../i18n/LanguageContext.jsx";
+import { useProjectContext } from "../../store/ProjectContext.jsx";
 import NewTask from "./NewTask.jsx";
 
 export default function Tasks({ projectId }) {
   const { projectsState, dispatch } = useProjectContext();
+  const { t } = useLanguage();
 
   const projectTasks = projectsState.tasks.filter(
     (task) => task.projectId === projectId,
@@ -30,14 +32,14 @@ export default function Tasks({ projectId }) {
 
   return (
     <section>
-      <h2 className="text-2xl font-bold text-stone-700 mb-4">Tasks</h2>
+      <h2 className="text-2xl font-bold text-stone-700 mb-4">
+        {t("tasks", "title")}
+      </h2>
 
       <NewTask onAdd={handleAddTask} />
 
       {projectTasks.length === 0 && (
-        <p className="text-stone-800 my-4">
-          This project does not have any tasks yet.
-        </p>
+        <p className="text-stone-800 my-4">{t("tasks", "empty")}</p>
       )}
 
       {projectTasks.length > 0 && (
@@ -50,7 +52,7 @@ export default function Tasks({ projectId }) {
                 className="text-stone-700 hover:text-red-500"
                 onClick={() => handleDeleteTask(task.id)}
               >
-                Clear
+                {t("common", "clear")}
               </button>
             </li>
           ))}

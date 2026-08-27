@@ -1,8 +1,9 @@
 import { useProjectContext } from "./store/ProjectContext.jsx";
-import NewProject from "./components/NewProject.jsx";
-import NoProjectSelected from "./components/NoProjectSelected.jsx";
-import ProjectsSidebar from "./components/ProjectsSidebar.jsx";
-import SelectedProject from "./components/SelectedProject.jsx";
+import NewProject from "./components/projects/NewProject.jsx";
+import NoProjectSelected from "./components/projects/NoProjectSelected.jsx";
+import ProjectsSidebar from "./components/projects/ProjectsSidebar.jsx";
+import SelectedProject from "./components/projects/SelectedProject.jsx";
+import LanguageSelector from "./components/LanguageSelector.jsx";
 
 function App() {
   const { projectsState } = useProjectContext();
@@ -20,7 +21,14 @@ function App() {
   return (
     <main className="h-screen my-8 flex gap-8">
       <ProjectsSidebar />
-      {content}
+
+      <div className="flex-1 relative">
+        <div className="absolute top-0 right-8">
+          <LanguageSelector />
+        </div>
+
+        {content}
+      </div>
     </main>
   );
 }
