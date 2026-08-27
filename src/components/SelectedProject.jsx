@@ -1,6 +1,23 @@
+import { useProjectContext } from "../store/ProjectContext.jsx";
 import Tasks from "./Tasks.jsx";
 
-export default function SelectedProject({ project, onDelete }) {
+export default function SelectedProject() {
+  const { projectsState, dispatch } = useProjectContext();
+
+  const project = projectsState.projects.find(
+    (project) => project.id === projectsState.selectedProjectId,
+  );
+
+  function handleDeleteProject() {
+    dispatch({
+      type: "DELETE_PROJECT",
+    });
+  }
+
+  if (!project) {
+    return null;
+  }
+
   const formattedDate = new Date(project.dueDate).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -17,7 +34,7 @@ export default function SelectedProject({ project, onDelete }) {
 
           <button
             className="text-stone-600 hover:text-stone-950"
-            onClick={onDelete}
+            onClick={handleDeleteProject}
           >
             Delete
           </button>
