@@ -1,4 +1,3 @@
-import noProjectImage from "../../assets/no-projects.png";
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
 import { useProjectContext } from "../../store/ProjectContext.jsx";
 import Button from "../ui/Button.jsx";
@@ -14,26 +13,18 @@ export default function NoProjectSelected() {
   }
 
   return (
-    <div className="mt-24 text-center w-2/3">
-      <img
-        src={noProjectImage}
-        alt={t("common", "imageAlt")}
-        className="w-16 h-16 object-contain mx-auto"
-      />
-
-      <h2 className="text-xl font-bold text-stone-500 my-4">
+    <div className="mt-16 text-center">
+      <h2 className="text-2xl font-bold text-stone-700">
         {t("projects", "noSelected")}
       </h2>
 
-      <p className="text-stone-400 mb-4">
+      <p className="mx-auto mt-3 max-w-md text-stone-500">
         {t("projects", "noSelectedDescription")}
       </p>
 
-      <p className="mt-8">
-        <Button onClick={handleStartAddProject}>
-          {t("projects", "create")}
-        </Button>
-      </p>
+      <div className="mt-6">
+        <Button onClick={handleStartAddProject}>{t("projects", "add")}</Button>
+      </div>
     </div>
   );
 }

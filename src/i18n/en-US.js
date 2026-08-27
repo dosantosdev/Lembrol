@@ -53,6 +53,9 @@ const enUS = {
     priorityLow: "Low",
     deleteTitle: "Delete task?",
     deleteMessage: "Are you sure you want to delete this task?",
+    timeRequiresDate: "To set a time, please also provide a date.",
+
+    reminderRequiresDate: "To use a reminder, please also provide a date.",
   },
 
   reminders: {

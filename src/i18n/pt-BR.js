@@ -53,6 +53,9 @@ const ptBR = {
     priorityLow: "Baixa",
     deleteTitle: "Excluir tarefa?",
     deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
+    timeRequiresDate: "Para definir um horário, informe também uma data.",
+
+    reminderRequiresDate: "Para usar um lembrete, informe também uma data.",
   },
 
   reminders: {
