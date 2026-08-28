@@ -10,6 +10,9 @@ export function triggerReminderAlert(task, settings) {
   }
 
   if (settings.sound) {
-    startReminderSound();
+    startReminderSound(
+      settings.soundType || "lembrol",
+      settings.customSound || null,
+    );
   }
 }

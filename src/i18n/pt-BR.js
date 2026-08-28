@@ -55,7 +55,6 @@ const ptBR = {
     deleteTitle: "Excluir tarefa?",
     deleteMessage: "Tem certeza que deseja excluir esta tarefa?",
     timeRequiresDate: "Para definir um horário, informe também uma data.",
-
     reminderRequiresDate: "Para usar um lembrete, informe também uma data.",
   },
 
@@ -68,12 +67,33 @@ const ptBR = {
 
   settings: {
     title: "Configurações de lembrete",
-    open: "Abrir configurações",
-    notification: "Notificações do sistema",
-    sound: "Som",
-    visual: "Alerta visual",
-  },
 
+    open: "Abrir configurações",
+
+    notification: "Notificações do sistema",
+
+    sound: "Som",
+
+    visual: "Alerta visual",
+
+    soundType: "Som do alarme",
+
+    soundLembrol: "Som padrão do Lembrol",
+
+    soundWindows: "Som de notificação do Windows",
+
+    soundAlarm: "Som de alarme do Windows",
+
+    soundCustom: "Som personalizado",
+
+    chooseAudio: "Escolher áudio",
+
+    changeAudio: "Alterar áudio",
+
+    testSound: "Testar som",
+
+    stopSound: "Parar som",
+  },
   validation: {
     invalidInput: "Entrada inválida",
     missingValues: "Parece que você esqueceu de preencher algum campo.",

@@ -9,6 +9,10 @@ const defaultSettings = {
     notification: true,
     sound: true,
     visual: true,
+
+    soundType: "lembrol",
+    customSound: null,
+    customSoundName: null,
   },
 };
 
@@ -25,6 +29,7 @@ function loadSettings() {
     return {
       ...defaultSettings,
       ...parsedSettings,
+
       reminders: {
         ...defaultSettings.reminders,
         ...parsedSettings.reminders,
@@ -45,6 +50,7 @@ export function SettingsProvider({ children }) {
   function updateReminderSettings(updates) {
     setSettings((previousSettings) => ({
       ...previousSettings,
+
       reminders: {
         ...previousSettings.reminders,
         ...updates,

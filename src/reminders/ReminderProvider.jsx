@@ -55,6 +55,7 @@ const storedReminderState = loadReminderState();
 
 export function ReminderProvider({ children }) {
   const { projectsState } = useProjectContext();
+
   const { settings } = useSettings();
 
   const [activeReminders, setActiveReminders] = useState([]);
@@ -76,6 +77,12 @@ export function ReminderProvider({ children }) {
   );
 
   const notificationTimerRef = useRef(null);
+
+  useEffect(() => {
+    if (window.electronAPI?.updateTrayCount) {
+      window.electronAPI.updateTrayCount(activeReminders.length);
+    }
+  }, [activeReminders.length]);
 
   useEffect(() => {
     const existingReminderKeys = new Set();
@@ -189,7 +196,9 @@ export function ReminderProvider({ children }) {
         });
 
         setSnoozedReminders((previous) => {
-          const updated = { ...previous };
+          const updated = {
+            ...previous,
+          };
 
           newNotifications.forEach((task) => {
             const reminderKey = getReminderKey(task);
@@ -246,7 +255,9 @@ export function ReminderProvider({ children }) {
       });
 
       setSnoozedReminders((previous) => {
-        const updated = { ...previous };
+        const updated = {
+          ...previous,
+        };
 
         delete updated[reminderKey];
 

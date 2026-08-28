@@ -55,7 +55,6 @@ const enUS = {
     deleteTitle: "Delete task?",
     deleteMessage: "Are you sure you want to delete this task?",
     timeRequiresDate: "To set a time, please also provide a date.",
-
     reminderRequiresDate: "To use a reminder, please also provide a date.",
   },
 
@@ -68,10 +67,32 @@ const enUS = {
 
   settings: {
     title: "Reminder settings",
+
     open: "Open settings",
+
     notification: "System notifications",
+
     sound: "Sound",
+
     visual: "Visual alert",
+
+    soundType: "Alarm sound",
+
+    soundLembrol: "Lembrol default sound",
+
+    soundWindows: "Windows notification sound",
+
+    soundAlarm: "Windows alarm sound",
+
+    soundCustom: "Custom sound",
+
+    chooseAudio: "Choose audio",
+
+    changeAudio: "Change audio",
+
+    testSound: "Test sound",
+
+    stopSound: "Stop sound",
   },
 
   validation: {
