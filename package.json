@@ -1,7 +1,7 @@
 {
   "name": "lembrol",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "author": "DoSantos Dev",
   "main": "electron/main.js",
@@ -38,7 +38,8 @@
     "icon": "build/icon.ico",
     "files": [
       "dist/**/*",
-      "electron/**/*"
+      "electron/**/*",
+      "build/tray-*.png"
     ],
     "directories": {
       "output": "release"
@@ -51,8 +52,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "installerSidebar": "build/installerSidebar.png",
-      "uninstallerSidebar": "build/uninstallerSidebar.png"
+      "installerSidebar": "build/installerSidebar.bmp",
+      "uninstallerSidebar": "build/uninstallerSidebar.bmp"
     }
   }
 }

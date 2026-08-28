@@ -78,12 +78,20 @@ export function ReminderProvider({ children }) {
 
   const notificationTimerRef = useRef(null);
 
+  /*
+   * Atualiza o contador da bandeja sempre que
+   * a quantidade de lembretes ativos mudar.
+   */
   useEffect(() => {
     if (window.electronAPI?.updateTrayCount) {
       window.electronAPI.updateTrayCount(activeReminders.length);
     }
   }, [activeReminders.length]);
 
+  /*
+   * Remove estados que pertencem a tarefas
+   * que não existem mais.
+   */
   useEffect(() => {
     const existingReminderKeys = new Set();
 
@@ -120,6 +128,9 @@ export function ReminderProvider({ children }) {
     });
   }, [projectsState.tasks]);
 
+  /*
+   * Persiste o estado dos lembretes.
+   */
   useEffect(() => {
     saveReminderState({
       dismissedReminders,
@@ -128,47 +139,98 @@ export function ReminderProvider({ children }) {
     });
   }, [dismissedReminders, notifiedReminders, snoozedReminders]);
 
+  /*
+   * Verifica os lembretes a cada segundo.
+   */
   useEffect(() => {
     function checkReminders() {
       const now = new Date();
 
-      const reminders = projectsState.tasks.filter((task) => {
+      const reminders = [];
+
+      const newNotifications = [];
+
+      projectsState.tasks.forEach((task) => {
         const reminderKey = getReminderKey(task);
 
         if (!reminderKey) {
-          return false;
+          return;
         }
 
+        /*
+         * Se foi dispensado, nunca mais aparece
+         * para este lembrete.
+         */
         if (dismissedReminders.has(reminderKey)) {
-          return false;
+          return;
         }
 
         const snoozeUntil = snoozedReminders[reminderKey];
 
+        /*
+         * Se está adiado e o tempo ainda não terminou,
+         * o lembrete permanece temporariamente escondido.
+         */
         if (snoozeUntil) {
           const snoozeDate = new Date(snoozeUntil);
 
           if (now < snoozeDate) {
-            return false;
+            return;
+          }
+
+          /*
+           * O adiamento terminou.
+           *
+           * Como o lembrete foi adiado, ele precisa
+           * tocar novamente mesmo que já tenha passado
+           * a janela original de 60 segundos.
+           */
+          if (!notifiedReminders.has(reminderKey)) {
+            newNotifications.push(task);
           }
         }
 
-        return shouldRemind(task, now);
+        /*
+         * Um lembrete já notificado continua sendo
+         * considerado ativo até ser dispensado ou adiado.
+         */
+        const isCurrentlyDue = shouldRemind(task, now);
+
+        const wasAlreadyNotified = notifiedReminders.has(reminderKey);
+
+        if (isCurrentlyDue || wasAlreadyNotified) {
+          reminders.push(task);
+        }
+
+        /*
+         * Primeiro disparo do lembrete.
+         */
+        if (isCurrentlyDue && !wasAlreadyNotified) {
+          if (!newNotifications.some((item) => item.id === task.id)) {
+            newNotifications.push(task);
+          }
+        }
       });
 
+      /*
+       * Atualiza os lembretes que continuam pendentes.
+       *
+       * IMPORTANTE:
+       * Eles não desaparecem depois de 60 segundos.
+       */
       setActiveReminders(reminders);
-
-      const newNotifications = reminders.filter((task) => {
-        const reminderKey = getReminderKey(task);
-
-        return reminderKey && !notifiedReminders.has(reminderKey);
-      });
 
       if (newNotifications.length > 0) {
         newNotifications.forEach((task) => {
           triggerReminderAlert(task, settings.reminders);
         });
 
+        /*
+         * O alerta visual automático fica aberto
+         * durante 8 segundos.
+         *
+         * Isso NÃO remove o lembrete do sino.
+         */
         setNotificationMode("alert");
         setNotificationOpen(true);
 
@@ -181,6 +243,12 @@ export function ReminderProvider({ children }) {
           notificationTimerRef.current = null;
         }, 8000);
 
+        /*
+         * Marca o lembrete como notificado.
+         *
+         * Isso faz com que ele continue aparecendo
+         * no sino mesmo depois da janela de 60 segundos.
+         */
         setNotifiedReminders((previous) => {
           const updated = new Set(previous);
 
@@ -195,6 +263,10 @@ export function ReminderProvider({ children }) {
           return updated;
         });
 
+        /*
+         * Se o lembrete acabou de tocar novamente
+         * após um adiamento, remove o adiamento.
+         */
         setSnoozedReminders((previous) => {
           const updated = {
             ...previous,
@@ -228,6 +300,9 @@ export function ReminderProvider({ children }) {
     settings,
   ]);
 
+  /*
+   * Limpeza somente quando o Provider for desmontado.
+   */
   useEffect(() => {
     return () => {
       if (notificationTimerRef.current) {
@@ -238,6 +313,9 @@ export function ReminderProvider({ children }) {
     };
   }, []);
 
+  /*
+   * Dispensa definitivamente o lembrete.
+   */
   function dismissReminder(taskId) {
     const task = projectsState.tasks.find((item) => item.id === taskId);
 
@@ -246,6 +324,9 @@ export function ReminderProvider({ children }) {
     stopReminderSound();
 
     if (reminderKey) {
+      /*
+       * Marca como dispensado.
+       */
       setDismissedReminders((previous) => {
         const updated = new Set(previous);
 
@@ -254,12 +335,26 @@ export function ReminderProvider({ children }) {
         return updated;
       });
 
+      /*
+       * Remove de qualquer adiamento existente.
+       */
       setSnoozedReminders((previous) => {
         const updated = {
           ...previous,
         };
 
         delete updated[reminderKey];
+
+        return updated;
+      });
+
+      /*
+       * Remove da lista de notificações já disparadas.
+       */
+      setNotifiedReminders((previous) => {
+        const updated = new Set(previous);
+
+        updated.delete(reminderKey);
 
         return updated;
       });
@@ -276,14 +371,18 @@ export function ReminderProvider({ children }) {
     });
   }
 
-  function stopReminder(taskId) {
+  /*
+   * Apenas para o som.
+   *
+   * O lembrete continua pendente.
+   */
+  function stopReminder() {
     stopReminderSound();
-
-    setActiveReminders((previous) => {
-      return previous.filter((task) => task.id !== taskId);
-    });
   }
 
+  /*
+   * Adia o lembrete.
+   */
   function snoozeReminder(taskId, minutes) {
     const task = projectsState.tasks.find((item) => item.id === taskId);
 
@@ -301,11 +400,33 @@ export function ReminderProvider({ children }) {
 
     const snoozeUntil = new Date(Date.now() + minutes * 60 * 1000);
 
+    /*
+     * Guarda o horário até o qual o lembrete
+     * deve permanecer escondido.
+     */
     setSnoozedReminders((previous) => ({
       ...previous,
       [reminderKey]: snoozeUntil.toISOString(),
     }));
 
+    /*
+     * Remove o estado de "já notificado".
+     *
+     * Isso é fundamental:
+     * quando o adiamento terminar, o lembrete
+     * poderá tocar novamente.
+     */
+    setNotifiedReminders((previous) => {
+      const updated = new Set(previous);
+
+      updated.delete(reminderKey);
+
+      return updated;
+    });
+
+    /*
+     * Remove imediatamente do sino.
+     */
     setActiveReminders((previous) => {
       return previous.filter((task) => task.id !== taskId);
     });
@@ -313,6 +434,9 @@ export function ReminderProvider({ children }) {
     setNotificationOpen(false);
   }
 
+  /*
+   * Abre manualmente a lista pelo sino.
+   */
   function openNotifications() {
     if (notificationTimerRef.current) {
       clearTimeout(notificationTimerRef.current);
@@ -324,6 +448,11 @@ export function ReminderProvider({ children }) {
     setNotificationOpen(true);
   }
 
+  /*
+   * Fecha somente o painel visual.
+   *
+   * Isso NÃO dispensa nenhum lembrete.
+   */
   function closeNotifications() {
     setNotificationOpen(false);
   }
