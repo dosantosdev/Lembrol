@@ -1,5 +1,5 @@
 import { showNotification } from "./notificationService.js";
-import { playReminderSound } from "./soundService.js";
+import { startReminderSound } from "./soundService.js";
 
 export function triggerReminderAlert(task, settings) {
   if (settings.notification) {
@@ -10,6 +10,6 @@ export function triggerReminderAlert(task, settings) {
   }
 
   if (settings.sound) {
-    playReminderSound();
+    startReminderSound();
   }
 }

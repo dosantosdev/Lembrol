@@ -3,6 +3,7 @@ const REMINDER_STATE_KEY = "lembrol-reminder-state";
 const defaultReminderState = {
   dismissedReminders: [],
   notifiedReminders: [],
+  snoozedReminders: {},
 };
 
 export function loadReminderState() {
@@ -23,6 +24,12 @@ export function loadReminderState() {
       notifiedReminders: Array.isArray(parsedState.notifiedReminders)
         ? parsedState.notifiedReminders
         : [],
+
+      snoozedReminders:
+        parsedState.snoozedReminders &&
+        typeof parsedState.snoozedReminders === "object"
+          ? parsedState.snoozedReminders
+          : {},
     };
   } catch {
     return defaultReminderState;
@@ -35,6 +42,7 @@ export function saveReminderState(state) {
     JSON.stringify({
       dismissedReminders: [...state.dismissedReminders],
       notifiedReminders: [...state.notifiedReminders],
+      snoozedReminders: state.snoozedReminders,
     }),
   );
 }

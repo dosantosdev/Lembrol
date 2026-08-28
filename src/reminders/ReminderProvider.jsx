@@ -1,11 +1,45 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+
 import { useProjectContext } from "../store/ProjectContext.jsx";
+
 import { shouldRemind, getReminderDate } from "./reminderService.js";
+
 import { triggerReminderAlert } from "./alertService.js";
+
 import { loadReminderState, saveReminderState } from "./reminderStorage.js";
+
+import { stopReminderSound } from "./soundService.js";
+
 import { useSettings } from "../store/SettingsContext.jsx";
 
 const ReminderContext = createContext();
+
+const SNOOZE_OPTIONS = [
+  {
+    label: "5 minutos",
+    minutes: 5,
+  },
+  {
+    label: "10 minutos",
+    minutes: 10,
+  },
+  {
+    label: "15 minutos",
+    minutes: 15,
+  },
+  {
+    label: "30 minutos",
+    minutes: 30,
+  },
+  {
+    label: "45 minutos",
+    minutes: 45,
+  },
+  {
+    label: "1 hora",
+    minutes: 60,
+  },
+];
 
 function getReminderKey(task) {
   const reminderDate = getReminderDate(task);
@@ -37,6 +71,10 @@ export function ReminderProvider({ children }) {
     new Set(storedReminderState.notifiedReminders),
   );
 
+  const [snoozedReminders, setSnoozedReminders] = useState(
+    storedReminderState.snoozedReminders || {},
+  );
+
   const notificationTimerRef = useRef(null);
 
   useEffect(() => {
@@ -61,14 +99,27 @@ export function ReminderProvider({ children }) {
         [...previous].filter((key) => existingReminderKeys.has(key)),
       );
     });
+
+    setSnoozedReminders((previous) => {
+      const updated = {};
+
+      Object.entries(previous).forEach(([key, snoozeTime]) => {
+        if (existingReminderKeys.has(key)) {
+          updated[key] = snoozeTime;
+        }
+      });
+
+      return updated;
+    });
   }, [projectsState.tasks]);
 
   useEffect(() => {
     saveReminderState({
       dismissedReminders,
       notifiedReminders,
+      snoozedReminders,
     });
-  }, [dismissedReminders, notifiedReminders]);
+  }, [dismissedReminders, notifiedReminders, snoozedReminders]);
 
   useEffect(() => {
     function checkReminders() {
@@ -77,11 +128,25 @@ export function ReminderProvider({ children }) {
       const reminders = projectsState.tasks.filter((task) => {
         const reminderKey = getReminderKey(task);
 
-        return (
-          shouldRemind(task, now) &&
-          reminderKey &&
-          !dismissedReminders.has(reminderKey)
-        );
+        if (!reminderKey) {
+          return false;
+        }
+
+        if (dismissedReminders.has(reminderKey)) {
+          return false;
+        }
+
+        const snoozeUntil = snoozedReminders[reminderKey];
+
+        if (snoozeUntil) {
+          const snoozeDate = new Date(snoozeUntil);
+
+          if (now < snoozeDate) {
+            return false;
+          }
+        }
+
+        return shouldRemind(task, now);
       });
 
       setActiveReminders(reminders);
@@ -97,17 +162,13 @@ export function ReminderProvider({ children }) {
           triggerReminderAlert(task, settings.reminders);
         });
 
-        // Novo lembrete aparece como alerta automático.
         setNotificationMode("alert");
         setNotificationOpen(true);
 
-        // Cancela somente um temporizador anterior,
-        // caso ainda exista.
         if (notificationTimerRef.current) {
           clearTimeout(notificationTimerRef.current);
         }
 
-        // O alerta automático permanece por 8 segundos.
         notificationTimerRef.current = setTimeout(() => {
           setNotificationOpen(false);
           notificationTimerRef.current = null;
@@ -126,6 +187,20 @@ export function ReminderProvider({ children }) {
 
           return updated;
         });
+
+        setSnoozedReminders((previous) => {
+          const updated = { ...previous };
+
+          newNotifications.forEach((task) => {
+            const reminderKey = getReminderKey(task);
+
+            if (reminderKey) {
+              delete updated[reminderKey];
+            }
+          });
+
+          return updated;
+        });
       }
     }
 
@@ -136,15 +211,21 @@ export function ReminderProvider({ children }) {
     return () => {
       clearInterval(interval);
     };
-  }, [projectsState.tasks, dismissedReminders, notifiedReminders, settings]);
+  }, [
+    projectsState.tasks,
+    dismissedReminders,
+    notifiedReminders,
+    snoozedReminders,
+    settings,
+  ]);
 
-  // Limpa o temporizador somente quando o Provider
-  // for desmontado, e não a cada atualização do estado.
   useEffect(() => {
     return () => {
       if (notificationTimerRef.current) {
         clearTimeout(notificationTimerRef.current);
       }
+
+      stopReminderSound();
     };
   }, []);
 
@@ -153,11 +234,21 @@ export function ReminderProvider({ children }) {
 
     const reminderKey = task ? getReminderKey(task) : null;
 
+    stopReminderSound();
+
     if (reminderKey) {
       setDismissedReminders((previous) => {
         const updated = new Set(previous);
 
         updated.add(reminderKey);
+
+        return updated;
+      });
+
+      setSnoozedReminders((previous) => {
+        const updated = { ...previous };
+
+        delete updated[reminderKey];
 
         return updated;
       });
@@ -174,12 +265,47 @@ export function ReminderProvider({ children }) {
     });
   }
 
+  function stopReminder(taskId) {
+    stopReminderSound();
+
+    setActiveReminders((previous) => {
+      return previous.filter((task) => task.id !== taskId);
+    });
+  }
+
+  function snoozeReminder(taskId, minutes) {
+    const task = projectsState.tasks.find((item) => item.id === taskId);
+
+    if (!task) {
+      return;
+    }
+
+    const reminderKey = getReminderKey(task);
+
+    if (!reminderKey) {
+      return;
+    }
+
+    stopReminderSound();
+
+    const snoozeUntil = new Date(Date.now() + minutes * 60 * 1000);
+
+    setSnoozedReminders((previous) => ({
+      ...previous,
+      [reminderKey]: snoozeUntil.toISOString(),
+    }));
+
+    setActiveReminders((previous) => {
+      return previous.filter((task) => task.id !== taskId);
+    });
+
+    setNotificationOpen(false);
+  }
+
   function openNotifications() {
-    // O usuário abriu pelo sino.
-    // Nesse momento, o alerta deixa de ser controlado
-    // pelo temporizador automático.
     if (notificationTimerRef.current) {
       clearTimeout(notificationTimerRef.current);
+
       notificationTimerRef.current = null;
     }
 
@@ -198,7 +324,13 @@ export function ReminderProvider({ children }) {
         notifiedReminders,
         notificationOpen,
         notificationMode,
+
+        snoozeOptions: SNOOZE_OPTIONS,
+
         dismissReminder,
+        stopReminder,
+        snoozeReminder,
+
         openNotifications,
         closeNotifications,
       }}

@@ -1,5 +1,9 @@
+import { useState } from "react";
+
 import { useLanguage } from "../../i18n/LanguageContext.jsx";
+
 import { useReminderContext } from "../../reminders/ReminderProvider.jsx";
+
 import { useSettings } from "../../store/SettingsContext.jsx";
 
 export default function ReminderNotification() {
@@ -8,10 +12,15 @@ export default function ReminderNotification() {
     notificationOpen,
     notificationMode,
     dismissReminder,
+    stopReminder,
+    snoozeReminder,
+    snoozeOptions,
   } = useReminderContext();
 
   const { settings } = useSettings();
   const { t } = useLanguage();
+
+  const [snoozeOpen, setSnoozeOpen] = useState(false);
 
   if (!notificationOpen) {
     return null;
@@ -54,15 +63,56 @@ export default function ReminderNotification() {
             <ul className="mt-3 space-y-2">
               {activeReminders.map((task) => (
                 <li key={task.id} className="lembrol-notification__task">
-                  <span className="truncate font-medium">{task.text}</span>
+                  <span className="min-w-0 truncate font-medium">
+                    {task.text}
+                  </span>
 
-                  <button
-                    type="button"
-                    className="shrink-0 text-xs text-violet-200 underline underline-offset-2 hover:text-white"
-                    onClick={() => dismissReminder(task.id)}
-                  >
-                    {t("common", "dismiss")}
-                  </button>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <div className="relative">
+                      <button
+                        type="button"
+                        className="text-xs text-violet-200 underline underline-offset-2 hover:text-white"
+                        onClick={() => setSnoozeOpen((previous) => !previous)}
+                      >
+                        Adiar
+                      </button>
+
+                      {snoozeOpen && (
+                        <div className="absolute right-0 top-full z-50 mt-2 w-36 overflow-hidden rounded-lg border border-white/10 bg-stone-950/95 p-1 shadow-xl backdrop-blur">
+                          {snoozeOptions.map((option) => (
+                            <button
+                              key={option.minutes}
+                              type="button"
+                              className="block w-full rounded-md px-3 py-2 text-left text-xs text-white/80 transition hover:bg-white/10 hover:text-white"
+                              onClick={() => {
+                                snoozeReminder(task.id, option.minutes);
+
+                                setSnoozeOpen(false);
+                              }}
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      className="text-xs text-violet-200 underline underline-offset-2 hover:text-white"
+                      onClick={() => stopReminder(task.id)}
+                    >
+                      Parar
+                    </button>
+
+                    <button
+                      type="button"
+                      className="text-xs text-violet-200 underline underline-offset-2 hover:text-white"
+                      onClick={() => dismissReminder(task.id)}
+                    >
+                      {t("common", "dismiss")}
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

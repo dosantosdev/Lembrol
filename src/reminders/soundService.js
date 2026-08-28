@@ -1,4 +1,6 @@
 let audioContext;
+let alarmTimer = null;
+let isAlarmPlaying = false;
 
 function getAudioContext() {
   if (!audioContext) {
@@ -29,21 +31,45 @@ function playTone(context, startTime, frequency, duration, volume) {
   oscillator.stop(startTime + duration);
 }
 
-export function playReminderSound() {
+function playAlarmPattern() {
+  const context = getAudioContext();
+
+  const start = context.currentTime;
+
+  playTone(context, start, 784, 0.8, 0.16);
+  playTone(context, start + 0.18, 1046.5, 1.0, 0.11);
+  playTone(context, start + 0.42, 1318.5, 1.6, 0.05);
+}
+
+export function startReminderSound() {
+  if (isAlarmPlaying) {
+    return;
+  }
+
   const context = getAudioContext();
 
   if (context.state === "suspended") {
     context.resume();
   }
 
-  const start = context.currentTime;
+  isAlarmPlaying = true;
 
-  // Toque principal: curto e brilhante.
-  playTone(context, start, 784, 0.9, 0.16);
+  playAlarmPattern();
 
-  // Segunda nota: dá a sensação de "magia".
-  playTone(context, start + 0.18, 1046.5, 1.1, 0.11);
+  alarmTimer = setInterval(() => {
+    if (!isAlarmPlaying) {
+      return;
+    }
 
-  // Pequena ressonância final.
-  playTone(context, start + 0.42, 1318.5, 2.2, 0.045);
+    playAlarmPattern();
+  }, 2000);
+}
+
+export function stopReminderSound() {
+  isAlarmPlaying = false;
+
+  if (alarmTimer) {
+    clearInterval(alarmTimer);
+    alarmTimer = null;
+  }
 }
