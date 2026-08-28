@@ -1,9 +1,14 @@
 export function isNotificationSupported() {
-  return "Notification" in window;
+  return "electronAPI" in window || "Notification" in window;
 }
 
 export async function requestNotificationPermission() {
-  if (!isNotificationSupported()) {
+  // Electron não precisa pedir permissão através da API do navegador.
+  if ("electronAPI" in window) {
+    return true;
+  }
+
+  if (!("Notification" in window)) {
     return false;
   }
 
@@ -21,7 +26,18 @@ export async function requestNotificationPermission() {
 }
 
 export function showNotification(title, options = {}) {
-  if (!isNotificationSupported()) {
+  const { body = "", tag = "" } = options;
+
+  // Quando estiver rodando dentro do Electron,
+  // usa a notificação nativa do Windows.
+  if ("electronAPI" in window) {
+    window.electronAPI.showNotification(title, body, tag);
+
+    return null;
+  }
+
+  // Fallback para navegador/PWA.
+  if (!("Notification" in window)) {
     return null;
   }
 
