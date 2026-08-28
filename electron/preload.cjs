@@ -20,4 +20,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   getCustomSoundData: (filePath) => {
     return ipcRenderer.invoke("get-custom-sound-data", filePath);
   },
+
+  updateTrayCount: (count) => {
+    ipcRenderer.send("update-tray-count", count);
+  },
 });

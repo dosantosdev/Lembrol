@@ -22,6 +22,30 @@ let isQuitting = false;
 
 const trayIconPath = path.join(__dirname, "../build/icon-32.png");
 
+const trayIconPaths = {
+  0: trayIconPath,
+
+  1: path.join(__dirname, "../build/icon-1.png"),
+
+  2: path.join(__dirname, "../build/icon-2.png"),
+
+  3: path.join(__dirname, "../build/icon-3.png"),
+
+  4: path.join(__dirname, "../build/icon-4.png"),
+
+  5: path.join(__dirname, "../build/icon-5.png"),
+
+  6: path.join(__dirname, "../build/icon-6.png"),
+
+  7: path.join(__dirname, "../build/icon-7.png"),
+
+  8: path.join(__dirname, "../build/icon-8.png"),
+
+  9: path.join(__dirname, "../build/icon-9.png"),
+
+  plus: path.join(__dirname, "../build/icon-9plus.png"),
+};
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1400,
@@ -60,6 +84,46 @@ function createTrayIcon() {
   return nativeImage.createFromPath(trayIconPath);
 }
 
+function getTrayIconPath(count) {
+  if (count <= 0) {
+    return trayIconPaths[0];
+  }
+
+  if (count >= 10) {
+    return trayIconPaths.plus;
+  }
+
+  return trayIconPaths[count];
+}
+
+function updateTrayCount(count) {
+  if (!tray) {
+    return;
+  }
+
+  const normalizedCount = Math.max(0, Number(count) || 0);
+
+  const iconPath = getTrayIconPath(normalizedCount);
+
+  if (!iconPath || !fs.existsSync(iconPath)) {
+    tray.setImage(createTrayIcon());
+  } else {
+    tray.setImage(nativeImage.createFromPath(iconPath));
+  }
+
+  if (normalizedCount === 0) {
+    tray.setToolTip("Lembrol");
+
+    return;
+  }
+
+  tray.setToolTip(
+    normalizedCount === 1
+      ? "Lembrol — 1 lembrete ativo"
+      : `Lembrol — ${normalizedCount} lembretes ativos`,
+  );
+}
+
 function showMainWindow() {
   if (!mainWindow) {
     createWindow();
@@ -82,6 +146,7 @@ function createTray() {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "Abrir Lembrol",
+
       click: () => {
         showMainWindow();
       },
@@ -93,6 +158,7 @@ function createTray() {
 
     {
       label: "Sair",
+
       click: () => {
         isQuitting = true;
         app.quit();
@@ -112,6 +178,14 @@ function createTray() {
 }
 
 /*
+ * Recebe do React a quantidade
+ * de lembretes ativos.
+ */
+ipcMain.on("update-tray-count", (_event, count) => {
+  updateTrayCount(count);
+});
+
+/*
  * Notificação nativa do Windows.
  */
 ipcMain.on("show-notification", (_event, data) => {
@@ -121,7 +195,9 @@ ipcMain.on("show-notification", (_event, data) => {
 
   const notification = new Notification({
     title: data.title || "Lembrol",
+
     body: data.body || "",
+
     silent: true,
   });
 
@@ -210,10 +286,15 @@ ipcMain.handle("get-custom-sound-data", async (_event, filePath) => {
 
     const mimeTypes = {
       ".mp3": "audio/mpeg",
+
       ".wav": "audio/wav",
+
       ".ogg": "audio/ogg",
+
       ".m4a": "audio/mp4",
+
       ".aac": "audio/aac",
+
       ".flac": "audio/flac",
     };
 
