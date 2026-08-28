@@ -20,30 +20,28 @@ let mainWindow = null;
 let tray = null;
 let isQuitting = false;
 
-const trayIconPath = path.join(__dirname, "../build/icon-32.png");
-
 const trayIconPaths = {
-  0: trayIconPath,
+  0: path.join(__dirname, "../build/tray-0-32.png"),
 
-  1: path.join(__dirname, "../build/icon-1.png"),
+  1: path.join(__dirname, "../build/tray-1-32.png"),
 
-  2: path.join(__dirname, "../build/icon-2.png"),
+  2: path.join(__dirname, "../build/tray-2-32.png"),
 
-  3: path.join(__dirname, "../build/icon-3.png"),
+  3: path.join(__dirname, "../build/tray-3-32.png"),
 
-  4: path.join(__dirname, "../build/icon-4.png"),
+  4: path.join(__dirname, "../build/tray-4-32.png"),
 
-  5: path.join(__dirname, "../build/icon-5.png"),
+  5: path.join(__dirname, "../build/tray-5-32.png"),
 
-  6: path.join(__dirname, "../build/icon-6.png"),
+  6: path.join(__dirname, "../build/tray-6-32.png"),
 
-  7: path.join(__dirname, "../build/icon-7.png"),
+  7: path.join(__dirname, "../build/tray-7-32.png"),
 
-  8: path.join(__dirname, "../build/icon-8.png"),
+  8: path.join(__dirname, "../build/tray-8-32.png"),
 
-  9: path.join(__dirname, "../build/icon-9.png"),
+  9: path.join(__dirname, "../build/tray-9-32.png"),
 
-  plus: path.join(__dirname, "../build/icon-9plus.png"),
+  plus: path.join(__dirname, "../build/tray-9plus-32.png"),
 };
 
 function createWindow() {
@@ -77,11 +75,13 @@ function createWindow() {
 }
 
 function createTrayIcon() {
-  if (!fs.existsSync(trayIconPath)) {
+  const iconPath = trayIconPaths[0];
+
+  if (!fs.existsSync(iconPath)) {
     return nativeImage.createEmpty();
   }
 
-  return nativeImage.createFromPath(trayIconPath);
+  return nativeImage.createFromPath(iconPath);
 }
 
 function getTrayIconPath(count) {

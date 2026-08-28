@@ -50,7 +50,9 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "installerSidebar": "build/installerSidebar.png",
+      "uninstallerSidebar": "build/uninstallerSidebar.png"
     }
   }
 }
