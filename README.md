@@ -6,7 +6,7 @@ changes its behavior to remind you when something needs your attention.
 
 ## Preview
 
-![Lembrol --- Project Manager](./assets/lembrol-preview.png)
+![Lembrol Preview](./src/assets/lembrol-preview.png)
 
 ## About
 
